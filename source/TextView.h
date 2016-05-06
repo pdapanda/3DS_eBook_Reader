@@ -4,7 +4,8 @@
 #define TEXTVIEW_H
 
 #include <string>
-#include <vector>
+#include <unordered_map>
+
 
 class TextView
 {
@@ -15,8 +16,7 @@ public:
 
 
 private:
-	std::vector<unsigned char> m_BookBuffer;
-	std::string opf;
+	std::unordered_map<std::string, std::string> manifest;
 };
 
 #endif

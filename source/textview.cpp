@@ -1,10 +1,10 @@
 // (c) 2016 AlbertoSonic & reworks
 
+#include <vector>
 #include <algorithm>
 
 #include "zipper/unzipper.h"
 #include "tinyxml2/tinyxml2.h"
-#include "litehtml/litehtml.h"
 #include "tidy/tidy.h"
 
 #include "textview.h"
