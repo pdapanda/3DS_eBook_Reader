@@ -1,14 +1,22 @@
+// (c) 2016 AlbertoSonic & reworks
+
 #ifndef TEXTVIEW_H
 #define TEXTVIEW_H
-#include <3ds.h>
 
-void TextView_Main();
-void TextView_SaveBookmark();
-int TextView_GetBookmark();
+#include <string>
+#include <vector>
 
-extern int page;
-extern bool greyScale;
-extern bool hideUI;
-extern bool hideOptions;
+class TextView
+{
+public:
+	~TextView();
+
+	void Parse(const std::string& book);
+
+
+private:
+	std::vector<unsigned char> m_BookBuffer;
+	std::string opf;
+};
 
 #endif

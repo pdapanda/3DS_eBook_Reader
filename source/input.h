@@ -1,13 +1,24 @@
+// (c) 2016 AlbertoSonic & reworks
+
 #ifndef INPUT_H
 #define INPUT_H
+
 #include <3ds.h>
 
-void getInput();
-void InputWait();
+class Input
+{
+public:
+	void HandleEvents();
 
-extern u32 old_input;
-extern u32 input;
-extern u16 posX;
-extern u16 posY;
+private:
+	touchPosition touch;
+
+public:
+	u16 m_PosX;
+	u16 m_PosY;
+	u32 m_kDown;
+	bool running = true;
+	int curMode = 0;
+};
 
 #endif

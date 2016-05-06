@@ -18,3 +18,9 @@ need to figure out efficient text rendering.
 thinking times new roman font?
 
 on white background?
+
+rewrite and move to sf2d
+
+dont forget to credit original author...
+
+update to latest ctrulib...

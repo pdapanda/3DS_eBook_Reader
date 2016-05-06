@@ -1,14 +1,18 @@
+// (c) 2016 AlbertoSonic & reworks
+
 #ifndef RENDERING_H
 #define RENDERING_H
-#include <3ds.h>
 
-void getFB();
-void clearBottom();
-void clearTop();
+class Renderer
+{
+public:
+	void StartDrawingTop();
+	void StartDrawingBottom();
+	void StopDrawing();
+	void Render();
 
-extern u8* screenBottom;
-extern u8* screenTopLeft;
-extern u8* screenTopRight;
-
+private:
+	
+};
 
 #endif
