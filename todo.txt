@@ -1,1 +1,7 @@
-- delete ebooks option
+- support underline
+- support strikethrough
+- support italics
+- support bold
+- support formats other than .epub
+- support table of contents
+- support images

@@ -7,6 +7,7 @@
 #include <chrono>
 #include <algorithm>
 #include <cstdlib>
+#include <cstdio>
 #include <dirent.h> 
 
 #include "gui.h"
@@ -14,13 +15,16 @@
 
 Gui::Gui()
 {
-	m_Font = sftd_load_font_file("res/Roboto-Regular.ttf");
+	m_Font = sftd_load_font_file("res/font/LiberationSans-Regular.ttf");
 	m_Next = sfil_load_PNG_file("res/NextFM.png", SF2D_PLACE_RAM);
 	m_Prev = sfil_load_PNG_file("res/PrevFM.png", SF2D_PLACE_RAM);
 	m_Top = sfil_load_PNG_file("res/top.png", SF2D_PLACE_RAM);
 	m_Bottom = sfil_load_PNG_file("res/bottom.png", SF2D_PLACE_RAM);
 	m_Exit = sfil_load_PNG_file("res/exit.png", SF2D_PLACE_RAM);
 	m_Charging = sfil_load_PNG_file("res/BatteryCharge.png", SF2D_PLACE_RAM);
+	m_About = sfil_load_PNG_file("res/about.png", SF2D_PLACE_RAM);
+	m_Controls = sfil_load_PNG_file("res/controls.png", SF2D_PLACE_RAM);
+	m_TextBG = sfil_load_PNG_file("res/text.png", SF2D_PLACE_RAM);
 
 	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryEmpty.png", SF2D_PLACE_RAM));
 	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryLowest.png", SF2D_PLACE_RAM));
@@ -34,8 +38,8 @@ Gui::Gui()
 	
 	dir = opendir("books");
 
-	// print all the files and directories within directory
-	while ((ent = readdir (dir)) != NULL) {
+	while ((ent = readdir (dir)) != NULL)
+	{
 	    files.push_back(ent->d_name);
 	}
 	
@@ -51,12 +55,20 @@ Gui::~Gui()
 	sf2d_free_texture(m_Bottom);
 	sf2d_free_texture(m_Exit);
 	sf2d_free_texture(m_Charging);
+	sf2d_free_texture(m_About);
+	sf2d_free_texture(m_Controls);
+	sf2d_free_texture(m_TextBG);
+
 	for(auto& v : m_BatteryLevels) {
 		sf2d_free_texture(v);
 	}
+
+	if (book != nullptr) { 
+		delete book; 
+	}
 }
 
-void Gui::HandleEvents(Input* input)
+void Gui::HandleEventsMenu(Input* input)
 {
 	if (input->m_kDown & KEY_UP) { m_Index--; }
 	if (input->m_kDown & KEY_DOWN) { m_Index++; }
@@ -68,13 +80,24 @@ void Gui::HandleEvents(Input* input)
 	if (m_Index > 6) m_Index = 6;
 	if (m_curPage < 0) m_curPage = 0;
 
+	if (input->m_kDown & KEY_X) { RemoveBook(files[m_Index+(7*m_curPage)]); }
+
 	if (input->m_kDown & KEY_A) { 
 		selected = files[m_Index+(7*m_curPage)]; 
 		input->curMode = 1;
+		OpenBook(selected);
 	}
 
 	if (input->m_PosX >= 0 && input->m_PosX <= 320 && input->m_PosY >= 217 && input->m_PosY <= 241) {
 		input->running = false;
+	}
+
+	if (input->m_PosX >= 159 && input->m_PosX <= 320 && input->m_PosY >= 217 && input->m_PosY <= 241) {
+		if (drawAbout == true) {
+			drawAbout = false;
+		} else {
+			drawAbout = true;
+		}
 	}
 
 	if (input->m_PosX >= 295 && input->m_PosX <= 320 && input->m_PosY >= 65 && input->m_PosY <= 137) {
@@ -86,6 +109,11 @@ void Gui::HandleEvents(Input* input)
 		m_curPage--; 
 		m_Index = 0;
 	}
+}
+
+void Gui::HandleEventsBook(Input* input)
+{
+
 }
 
 void Gui::Update()
@@ -133,7 +161,11 @@ std::string Gui::getSelected()
 
 void Gui::DrawTopBackground()
 {
-	sf2d_draw_texture(m_Top, 0, 0);
+	if (drawAbout) {
+		sf2d_draw_texture(m_About, 0, 0);
+	} else {
+		sf2d_draw_texture(m_Top, 0, 0);
+	}
 }
 
 void Gui::DrawStatusScreen()
@@ -148,7 +180,33 @@ void Gui::DrawStatusScreen()
 	sftd_draw_text (m_Font, 299, 2, RGBA8(0, 0, 0, 255), 12, clock().c_str());
 	
 	// Title - Name of the book!
-    sftd_draw_text (m_Font, 20, 2, RGBA8(0, 0, 0, 255), 12, remove_extension(selected).c_str());
+    if (!drawAbout) {
+    	sftd_draw_text (m_Font, 20, 2, RGBA8(0, 0, 0, 255), 12, remove_extension(selected).c_str());
+    }
+}
+
+void Gui::OpenBook(const std::string& bookName)
+{
+	book = new book;
+
+	book->LoadBook(bookName);
+}
+
+void Gui::CloseBook()
+{
+	delete book;
+}
+
+void Gui::DrawBook()
+{
+	sf2d_draw_texture(m_TextBG, 0, 0);
+
+	sftd_draw_text(m_Font, 10, 10, RGBA8(136, 111, 92, 255), 12, ???);
+}
+
+void Gui::DrawControls()
+{
+	sf2d_draw_texture(m_Bottom, 0, 0);
 }
 
 std::string Gui::clock()
@@ -170,6 +228,17 @@ std::string Gui::remove_extension(const std::string& filename) {
     size_t lastdot = filename.find_last_of(".");
     if (lastdot == std::string::npos) return filename;
     return filename.substr(0, lastdot); 
+}
+
+void Gui::RemoveBook(const std::string& file)
+{
+	// remove book from sd card
+	std::string path = "books/" + file;
+	remove(path.c_str());
+
+	// erase book from vector
+	files.erase(std::find(files.begin(), files.end(), file));
+	files.shrink_to_fit();
 }
 
 /*

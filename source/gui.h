@@ -8,8 +8,7 @@
 #include <sf2d.h>
 #include <sftd.h>
 
-#include <vector>
-#include <string>
+#include "book.h"
 
 class Input;
 
@@ -19,7 +18,8 @@ public:
 	Gui();
 	~Gui();
 
-	void HandleEvents(Input* input);
+	void HandleEventsMenu(Input* input);
+	void HandleEventsBook(Input* input);
 	void Update();
 
 	// Top Screen
@@ -29,7 +29,14 @@ public:
 	// Bottom Screen
 	void DrawFileSelect();
 
-	void Cleanup();
+	void OpenBook(const std::string& bookName);
+	void CloseBook();
+
+	// Top Screen
+	void DrawBook();
+
+	// Bottom Screen
+	void DrawControls();
 
 	std::string getSelected();
 
@@ -38,14 +45,18 @@ private:
 	int m_curPage = 0;
 	unsigned int begin = 0;
 	unsigned int end = 7;
+	bool drawAbout = false;
 
 	sf2d_texture* m_Next;
 	sf2d_texture* m_Prev;
 	sf2d_texture* m_Top;
 	sf2d_texture* m_Bottom;
 	sf2d_texture* m_Exit;
+	sf2d_texture* m_About;
 	std::vector<sf2d_texture*> m_BatteryLevels;
 	sf2d_texture* m_Charging;
+	sf2d_texture* m_Controls;
+	sf2d_texture* m_TextBG;
 
 	sftd_font* m_Font;
 
@@ -59,6 +70,9 @@ private:
 private:
 	std::string clock();
 	std::string remove_extension(const std::string& filename);
+	void RemoveBook(const std::string& file);
+
+	Book* book;
 };
 
 #endif

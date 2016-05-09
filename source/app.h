@@ -6,7 +6,6 @@
 #include "gui.h"
 #include "input.h"
 #include "rendering.h"
-#include "textview.h"
 
 class App
 {
@@ -23,7 +22,6 @@ public:
 	Input* input;
 	Renderer* ren;
 	Gui* gui;
-	TextView* book;
 };
 
 #endif

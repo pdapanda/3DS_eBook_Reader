@@ -12,3 +12,4 @@ build/
 *.elf
 *.smdh
 *.bat
+unzippedepub/

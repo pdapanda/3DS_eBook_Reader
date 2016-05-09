@@ -8,7 +8,6 @@
 
 #define MENU 0
 #define TEXT 1
-#define EXIT 2
 #define TO_MICROSECONDS 1000
 
 void App::Init()
@@ -29,7 +28,6 @@ void App::Init()
 	input = new Input;
 	gui = new Gui;
 	ren = new Renderer;
-	book = new TextView;
 }
 
 void App::Event()
@@ -46,19 +44,18 @@ void App::Event()
 	switch (input->curMode)
 	{
 		case MENU:
-			gui->HandleEvents(input);	
+			gui->HandleEventsMenu(input);	
+		break;
+
+		case TEXT:
+			gui->HandleEventsBook(input);
 		break;
 	}
 }
 
 void App::Update()
 {
-	switch (input->curMode)
-	{
-		case MENU:
-			gui->Update();
-		break;
-	}
+	gui->Update();
 }
 
 void App::Render()
@@ -68,16 +65,33 @@ void App::Render()
 		case MENU:
 			ren->StartDrawingTop();
 
-			gui->DrawTopBackground();
-			gui->DrawStatusScreen();
+				gui->DrawTopBackground();
+				gui->DrawStatusScreen();
 				
 			ren->StopDrawing();
 			ren->StartDrawingBottom();
 
-			gui->DrawFileSelect();
+				gui->DrawFileSelect();
 
 			ren->StopDrawing();
 			ren->Render();
+		break;
+
+		case TEXT:
+			ren->StartDrawingTop();
+
+				gui->DrawBook();
+				gui->DrawStatusScreen();
+				
+			ren->StopDrawing();
+			ren->StartDrawingBottom();
+
+				gui->DrawControls();
+
+			ren->StopDrawing();
+			ren->Render();
+
+
 		break;
 	}
 }
@@ -87,7 +101,6 @@ void App::End()
 	delete input;
 	delete gui;
 	delete ren;
-	delete book;
 
 	ptmuExit();
 	hidExit();
