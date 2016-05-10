@@ -38,11 +38,14 @@ public:
 	// Bottom Screen
 	void DrawControls();
 
+	void Reader();
+
 	std::string getSelected();
 
 private:
 	int m_Index = 0;
 	int m_curPage = 0;
+	int m_BookPage = 1;
 	unsigned int begin = 0;
 	unsigned int end = 7;
 	bool drawAbout = false;

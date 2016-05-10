@@ -35,7 +35,7 @@ INCLUDES	:=	include
 #ROMFS		:=	romfs
 APP_TITLE       := 3DS Ebook Reader
 APP_DESCRIPTION := Read your ebooks right on your 3DS!
-APP_AUTHOR      := AlbertoSONIC & reworks
+APP_AUTHOR      := reworks
 
 #---------------------------------------------------------------------------------
 # options for code generation

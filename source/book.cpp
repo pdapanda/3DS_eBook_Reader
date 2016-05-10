@@ -5,13 +5,27 @@
 
 #include <algorithm>
 
-#include "zipper/unzipper.h"
-#include "tinyxml2/tinyxml2.h"
-#include "tidybook.h"
+#include "BLUnZip.h"
+#include "tinyxml2.h"
+#include "tidy.h"
+
 #include "book.h"
 
-using namespace zipper;
 using namespace tinyxml2;
+
+char TidyBook(const std::string& buffer)
+{
+	char output;
+
+	TidyDoc tdoc = tidyCreate();
+	tidyOptSetBool(tdoc, TidyXhtmlOut, yes);
+	tidyParseString(tdoc, buffer.c_str());
+	tidyCleanAndRepair(tdoc);
+
+	tidySaveString(tdoc, &output, nullptr);
+
+	return output;
+}
 
 Book::~Book()
 {
@@ -29,19 +43,13 @@ void Book::LoadBook(const std::string& epub)
 
 void Book::ParseContainer()
 {
-	Unzipper unzipper(book);
+	BLUnZip * zipfile = new BLUnZip( book );
+	zipfile->List();
 
-	std::vector<unsigned char> temp;
-
-	unzipper.extractEntryToMemory("META-INF/container.xml", temp);
-
-	char tempArray[temp.size()];
-	std::copy(temp.begin(), temp.end(), tempArray);
-
-	std::string buffer (tempArray);
+	std::string buffer( zipfile->ExtractToString( "META-INF/container.xml" ));
 	buffer = TidyBook(buffer);
 
-	unzipper.close();
+	delete zipfile;
 
 	XMLDocument doc;
     doc.Parse( buffer.c_str() );
@@ -53,19 +61,13 @@ void Book::ParseContainer()
 
 void Book::ParseOPF()
 {
-	Unzipper unzipper(book);
+	BLUnZip * zipfile = new BLUnZip( book );
+	zipfile->List();
 
-	std::vector<unsigned char> temp;
-
-	unzipper.extractEntryToMemory(opf, temp);
-
-	char tempArray[temp.size()];
-	std::copy(temp.begin(), temp.end(), tempArray);
-
-	std::string buffer (tempArray);
+	std::string buffer( zipfile->ExtractToString( opf ));
 	buffer = TidyBook(buffer);
 
-	unzipper.close();
+	delete zipfile;
 
 	XMLDocument doc;
     doc.Parse( buffer.c_str() );
@@ -79,9 +81,4 @@ void Book::ParseOPF()
 	{
 		spine.push_back(rfe->Attribute("idref"));
 	}
-}
-
-void Book::ParseText()
-{
-	
 }

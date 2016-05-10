@@ -9,14 +9,12 @@
 
 class Book
 {
-private:
-	void ParseContainer();
-	void ParseOPF();
-
 public:
 	~Book();
 	void LoadBook(const std::string& epub);
 
+	void ParseContainer();
+	void ParseOPF();
 private:
 	std::string book;
 	std::string opf;

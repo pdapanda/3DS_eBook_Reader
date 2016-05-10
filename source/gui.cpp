@@ -38,7 +38,7 @@ Gui::Gui()
 	
 	dir = opendir("books");
 
-	while ((ent = readdir (dir)) != NULL)
+	while ((ent = readdir (dir)) != nullptr	)
 	{
 	    files.push_back(ent->d_name);
 	}
@@ -113,6 +113,11 @@ void Gui::HandleEventsMenu(Input* input)
 
 void Gui::HandleEventsBook(Input* input)
 {
+	if (input->m_kDown & KEY_LEFT) { m_BookPage--; }
+	if (input->m_kDown & KEY_RIGHT) { m_BookPage++; }
+
+	if (m_BookPage < 1) { m_BookPage = 1; }
+
 
 }
 
@@ -187,7 +192,7 @@ void Gui::DrawStatusScreen()
 
 void Gui::OpenBook(const std::string& bookName)
 {
-	book = new book;
+	book = new Book;
 
 	book->LoadBook(bookName);
 }
@@ -201,12 +206,19 @@ void Gui::DrawBook()
 {
 	sf2d_draw_texture(m_TextBG, 0, 0);
 
-	sftd_draw_text(m_Font, 10, 10, RGBA8(136, 111, 92, 255), 12, ???);
+	sftd_draw_text(m_Font, 10, 10, RGBA8(136, 111, 92, 255), 12, book->manifest[book->spine[0]].c_str());
 }
 
 void Gui::DrawControls()
 {
 	sf2d_draw_texture(m_Bottom, 0, 0);
+}
+
+void Gui::Reader()
+{
+	//int x = 10;
+	//int y = 10;
+
 }
 
 std::string Gui::clock()

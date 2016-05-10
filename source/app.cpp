@@ -109,10 +109,3 @@ void App::End()
 	sf2d_fini();
 	sftd_fini();
 }
-
-//Text screen
-//TextView_Main();
-//GUI_TextView(path, page, greyScale);
-//GUI_StatusBar(title);
-//if (!hideUI)GUI_QuickUi();
-//if (!hideOptions)GUI_OptionsUi(greyScale);

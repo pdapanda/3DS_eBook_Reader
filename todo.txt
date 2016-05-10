@@ -5,3 +5,4 @@
 - support formats other than .epub
 - support table of contents
 - support images
+- makefile recursive searching for src files
