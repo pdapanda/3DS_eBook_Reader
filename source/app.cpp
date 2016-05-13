@@ -1,8 +1,8 @@
 // (c) 2016 AlbertoSonic & reworks
 
-#include <3ds.h>
-
 #include <unistd.h>
+#include <sf2d.h>
+#include <sftd.h>
 
 #include "app.h"
 
@@ -23,11 +23,11 @@ void App::Init()
 	
 	sftd_init();
 
-	input->curMode = MENU;
-
 	input = new Input;
 	gui = new Gui;
 	ren = new Renderer;
+
+	input->curMode = MENU;
 }
 
 void App::Event()

@@ -84,11 +84,11 @@ void Gui::HandleEventsMenu(Input* input)
 
 	if (input->m_kDown & KEY_A) { 
 		selected = files[m_Index+(7*m_curPage)]; 
-		input->curMode = 1;
 		OpenBook(selected);
+		input->curMode = 1;
 	}
 
-	if (input->m_PosX >= 0 && input->m_PosX <= 320 && input->m_PosY >= 217 && input->m_PosY <= 241) {
+	if (input->m_PosX >= 0 && input->m_PosX <= 158 && input->m_PosY >= 217 && input->m_PosY <= 241) {
 		input->running = false;
 	}
 
@@ -113,10 +113,10 @@ void Gui::HandleEventsMenu(Input* input)
 
 void Gui::HandleEventsBook(Input* input)
 {
-	if (input->m_kDown & KEY_LEFT) { m_BookPage--; }
-	if (input->m_kDown & KEY_RIGHT) { m_BookPage++; }
+	//if (input->m_kDown & KEY_LEFT) { m_BookPage--; }
+	//if (input->m_kDown & KEY_RIGHT) { m_BookPage++; }
 
-	if (m_BookPage < 1) { m_BookPage = 1; }
+	//if (m_BookPage < 1) { m_BookPage = 1; }
 
 
 }
@@ -183,7 +183,7 @@ void Gui::DrawStatusScreen()
 
 	// clock
 	sftd_draw_text (m_Font, 299, 2, RGBA8(0, 0, 0, 255), 12, clock().c_str());
-	
+
 	// Title - Name of the book!
     if (!drawAbout) {
     	sftd_draw_text (m_Font, 20, 2, RGBA8(0, 0, 0, 255), 12, remove_extension(selected).c_str());
@@ -194,7 +194,9 @@ void Gui::OpenBook(const std::string& bookName)
 {
 	book = new Book;
 
-	book->LoadBook(bookName);
+	std::string fullBook = "books/"+bookName;
+
+	book->LoadBook(fullBook.c_str());
 }
 
 void Gui::CloseBook()
@@ -206,7 +208,7 @@ void Gui::DrawBook()
 {
 	sf2d_draw_texture(m_TextBG, 0, 0);
 
-	sftd_draw_text(m_Font, 10, 10, RGBA8(136, 111, 92, 255), 12, book->manifest[book->spine[0]].c_str());
+	//sftd_draw_text(m_Font, 10, 10, RGBA8(136, 111, 92, 255), 12, book->manifest[book->spine[0]].c_str());
 }
 
 void Gui::DrawControls()

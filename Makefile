@@ -36,14 +36,15 @@ INCLUDES	:=	include
 APP_TITLE       := 3DS Ebook Reader
 APP_DESCRIPTION := Read your ebooks right on your 3DS!
 APP_AUTHOR      := reworks
+ICON            :=  icon.png
 
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
-ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard
+ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
 
 CFLAGS	:=	-g -Wall -O2 -mword-relocations \
-			-fomit-frame-pointer -ffunction-sections -ffast-math \
+			-fomit-frame-pointer -ffunction-sections \
 			$(ARCH)
 
 CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS
@@ -167,25 +168,7 @@ $(OUTPUT).elf	:	$(OFILES)
 #---------------------------------------------------------------------------------
 	@echo $(notdir $<)
 	@$(bin2o)
-
-# WARNING: This is not the right way to do this! TODO: Do it right!
-#---------------------------------------------------------------------------------
-#%.vsh.o	:	%.vsh
-#---------------------------------------------------------------------------------
-#	@echo $(notdir $<)
-#	@python $(AEMSTRO)/aemstro_as.py $< ../$(notdir $<).shbin
-#	@bin2s ../$(notdir $<).shbin | $(PREFIX)as -o $@
-#	@echo "extern const u8" `(echo $(notdir $<).shbin | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`"_end[];" > `(echo $(notdir $<).shbin | tr . _)`.h
-#	@echo "extern const u8" `(echo $(notdir $<).shbin | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`"[];" >> `(echo $(notdir $<).shbin | tr . _)`.h
-#	@echo "extern const u32" `(echo $(notdir $<).shbin | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`_size";" >> `(echo $(notdir $<).shbin | tr . _)`.h
-#	@rm ../$(notdir $<).shbin
-#
-#-include $(DEPENDS)
-
-#---------------------------------------------------------------------------------------
-#endif
-#---------------------------------------------------------------------------------------
-
+	
 #---------------------------------------------------------------------------------
 # rules for assembling GPU shaders
 #---------------------------------------------------------------------------------
