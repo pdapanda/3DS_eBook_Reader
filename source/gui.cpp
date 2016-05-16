@@ -221,19 +221,14 @@ void Gui::DrawBook()
 	//sftd_draw_text_wrap(sftd_font *font, int x, int y, unsigned int color, unsigned int size, unsigned int lineWidth, const char *text);
 	
 	//sftd_draw_text(m_Font, 10, 10, RGBA8(136, 111, 92, 255), 12, book->manifest[book->spine[0]].c_str());
+
+	
 }
 
 void Gui::DrawControls()
 {
 	sf2d_draw_texture(m_Bottom, 0, 0);
 	sf2d_draw_texture(m_Controls, 0, 217);
-}
-
-void Gui::Reader()
-{
-	//int x = 10;
-	//int y = 10;
-
 }
 
 std::string Gui::clock()
@@ -267,100 +262,3 @@ void Gui::RemoveBook(const std::string& file)
 	files.erase(std::find(files.begin(), files.end(), file));
 	files.shrink_to_fit();
 }
-
-/*
-
-void GUI_OptionsUi(bool greyScale)
-{
-	gfxDrawSprite(GFX_BOTTOM, GFX_LEFT, (u8*)Options_bin, 171, 291, 14, 46);
-
-	if (greyScale) //Color selection
-	{
-		drawFillRect(54, 176, 144, 184, 192, 192, 192, screenBottom);
-	}
-	else
-	{
-		drawFillRect(172, 176, 263, 184, 192, 192, 192, screenBottom);
-	}
-}
-
-void GUI_TextView(char* path, int page, bool greyScale)
-{
-	//Draw BKG
-	gfxDrawSprite(GFX_TOP, GFX_LEFT, (u8*)TextBKG_bin, 240, 400, 0, 0); 
-	if (greyScale)
-	{
-		drawFillRect(40, 20, 359, 239, 255, 255, 255, screenTopLeft);
-		drawFillRect(0, 0, 319, 239, 255, 255, 255, screenBottom);
-	}
-	else
-	{
-		drawFillRect(40, 20, 359, 239, 243, 231, 189, screenTopLeft);
-		drawFillRect(0, 0, 319, 239, 243, 231, 189, screenBottom);
-	}
-
-	//Draw page
-	sprintf(buffer, "PG: %i", page + 1);
-	gfxDrawText(GFX_TOP, GFX_LEFT, &fontBlack, buffer, 5, 238 - fontBlack.height * 15);	
-
-	//Read the page
-	int c;
-	FILE *file;
-	nextAvailable = true;
-	
-	file = fopen(path, "r");
-	if (file) {
-		//Show bookmark (with animation)
-		if (page == TextView_GetBookmark(path))
-		{
-			if (bookmark_animation != 24) bookmark_animation+=4;
-		}
-		else bookmark_animation = 0;
-		if(bookmark_animation != 0) drawFillRect(368, 20, 385, 20 + bookmark_animation, 255, 0, 0, screenTopLeft);
-
-		//Start reading the page
-        fseek(file, !page ? 4 : offsets[page], SEEK_SET);
-		int i = 0;
-		for (i = 0; i < 29; i++)
-		{
-			//Loads the line
-			int j = 0;
-			char line[55];
-
-			for (j = 0; j < 55; j++)
-			{
-				if ((c = getc(file)) != EOF && c != '\n') line[j] = c;
-				else
-				{
-					if (c == EOF) nextAvailable = false;
-					line[j] = '\0';
-					break;
-				}
-			}
-
-			//Prints text
-			gfxDrawText(
-				i < 14 ? GFX_TOP : GFX_BOTTOM, GFX_LEFT,                 //Screen on which to print the text
-				greyScale ? &fontBlack : &fontBrown,
-				line,                                                    //Line of text to print
-				i < 14 ? 44 : 5,                                         //Horizzontal position of the text
-				238 - fontBlack.height * (i < 14 ? i + 2 : i + 1 - 14)       //Vertical position of the text
-				);
-		}
-        //Save the current offset in file, for every page
-	    fflush(file);
-	    offsets[page+1] = ftell(file);
-		fclose(file);
-	}
-	else
-	{
-		//Error
-	    
-	}
-
-	//Next/Previous Page buttons:
-	if (page!=0) gfxDrawSprite(GFX_TOP, GFX_LEFT, (u8*)PrevPG_bin, 71, 23, 0, 85);       // <--
-	if (nextAvailable) gfxDrawSprite(GFX_TOP, GFX_LEFT, (u8*)NextPG_bin, 72, 22, 378, 85); // -->	
-
-}
-*/

@@ -90,3 +90,6 @@ std::string Book::GetBook()
 {
 	return book;
 }
+
+// iterate through <p> tags, store text using ->GetText(), then draw with text wrap and scrolling.
+// mehbeh lock to 60ups?

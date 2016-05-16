@@ -38,8 +38,6 @@ public:
 	// Bottom Screen
 	void DrawControls();
 
-	void Reader();
-
 	std::string getSelected();
 
 private:

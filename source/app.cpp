@@ -9,6 +9,7 @@
 #define MENU 0
 #define TEXT 1
 #define TO_MICROSECONDS 1000
+#define WAIT_MILLISECONDS 50
 
 void App::Init()
 {
@@ -34,8 +35,8 @@ void App::Event()
 {
 	input->HandleEvents();
 
-	// to allow events to proccess on 3ds hardware...
-	usleep(50*TO_MICROSECONDS);
+	// delay program to allow 3ds hardware to catch up.
+	usleep(WAIT_MILLISECONDS*TO_MICROSECONDS);
 
 	if (input->m_kDown & KEY_START) {
 		input->running = false;
