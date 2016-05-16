@@ -6,3 +6,4 @@
 - support table of contents
 - support images
 - makefile recursive searching for src files
+- implement libtidy. i tried doing this but the library refuses to work on 3ds's.

@@ -3,29 +3,17 @@
 // only worry about paragraphs - by spitting text when getting <div> tag
 // http://ideveloperworld.blogspot.com.au/2011/02/epub-reader.html
 
+// #include "tidy.h"
+// #include "tidybuffio.h"
+
 #include <algorithm>
 
 #include "BLUnZip.h"
 #include "tinyxml2.h"
-#include "tidy.h"
 
 #include "book.h"
 
 using namespace tinyxml2;
-
-char TidyBook(const std::string& buffer)
-{
-	char output;
-
-	TidyDoc tdoc = tidyCreate();
-	tidyOptSetBool(tdoc, TidyXhtmlOut, yes);
-	tidyParseString(tdoc, buffer.c_str());
-	tidyCleanAndRepair(tdoc);
-
-	tidySaveString(tdoc, &output, nullptr);
-
-	return output;
-}
 
 Book::~Book()
 {
@@ -43,42 +31,62 @@ void Book::LoadBook(const std::string& epub)
 
 void Book::ParseContainer()
 {
-	BLUnZip * zipfile = new BLUnZip( book );
-	zipfile->List();
+	BLUnZip zipfile (book);
+	std::string unclean ( zipfile.ExtractToString("META-INF/container.xml") );
+/*
+	TidyBuffer output = {0};
+	TidyDoc tdoc = tidyCreate();
 
-	std::string buffer( zipfile->ExtractToString( "META-INF/container.xml" ));
-	buffer = TidyBook(buffer);
+	tidyOptSetBool(tdoc, TidyXhtmlOut, yes);
+	tidyParseString(tdoc, unclean.c_str());
+	tidyCleanAndRepair(tdoc);
+	tidyRunDiagnostics(tdoc);
+	
+	tidySaveBuffer(tdoc, &output);
+	
+	std::string clean(output.bp, output.bp + output.size);
 
-	delete zipfile;
-
+    tidyBufFree(&output);
+	tidyRelease(tdoc);
+*/
 	XMLDocument doc;
-    doc.Parse( buffer.c_str() );
+    doc.Parse( unclean.c_str() );
 
-    XMLElement* rootfileElement = doc.FirstChildElement( "container" )->FirstChildElement( "rootfiles" )->FirstChildElement( "rootfile" );
+    XMLElement* container = doc.FirstChildElement( "container" );
+    XMLElement* rootfiles = container->FirstChildElement( "rootfiles" );
+    XMLElement* rootfile = rootfiles->FirstChildElement( "rootfile" );
 
-    opf = rootfileElement->Attribute("full-path");
+    opf = rootfile->Attribute("full-path");
 }
 
 void Book::ParseOPF()
 {
-	BLUnZip * zipfile = new BLUnZip( book );
-	zipfile->List();
-
-	std::string buffer( zipfile->ExtractToString( opf ));
-	buffer = TidyBook(buffer);
-
-	delete zipfile;
-
+	BLUnZip zipfile ( book );
+	
+	std::string unclean( zipfile.ExtractToString( opf ));
+	
 	XMLDocument doc;
-    doc.Parse( buffer.c_str() );
+    doc.Parse( unclean.c_str() );
 
-	for(XMLElement* rfe = doc.FirstChildElement("package")->FirstChildElement("manifest")->FirstChildElement("item"); rfe != nullptr; rfe = rfe->NextSiblingElement("item"))
+    XMLElement* package = doc.FirstChildElement("package");
+    XMLElement* manifest_ = package->FirstChildElement("manifest");
+    XMLElement* item = manifest_->FirstChildElement("item");
+
+	for(XMLElement* rfe = item; rfe != nullptr; rfe = rfe->NextSiblingElement("item"))
 	{
     	manifest.emplace(rfe->Attribute("id"), rfe->Attribute("href"));
 	}
 
-	for (XMLElement* rfe = doc.FirstChildElement("package")->FirstChildElement("spine"); rfe != nullptr; rfe = rfe->NextSiblingElement("itemref"))
+	XMLElement* spine_ = package->FirstChildElement("spine");
+	XMLElement* itemref = spine_->FirstChildElement("itemref");
+
+	for (XMLElement* rfe = itemref; rfe != nullptr; rfe = rfe->NextSiblingElement("itemref"))
 	{
 		spine.push_back(rfe->Attribute("idref"));
 	}
+}
+
+std::string Book::GetBook()
+{
+	return book;
 }

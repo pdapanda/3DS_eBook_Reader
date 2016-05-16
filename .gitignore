@@ -12,4 +12,7 @@ build/
 *.elf
 *.smdh
 *.bat
+*.cia
+*.lnk
 unzippedepub/
+reference files/

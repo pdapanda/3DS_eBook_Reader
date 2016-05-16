@@ -84,8 +84,10 @@ void Gui::HandleEventsMenu(Input* input)
 
 	if (input->m_kDown & KEY_A) { 
 		selected = files[m_Index+(7*m_curPage)]; 
-		OpenBook(selected);
-		input->curMode = 1;
+		if (selected != "") {
+			OpenBook(selected);
+			input->curMode = 1;
+		}
 	}
 
 	if (input->m_PosX >= 0 && input->m_PosX <= 158 && input->m_PosY >= 217 && input->m_PosY <= 241) {
@@ -113,12 +115,18 @@ void Gui::HandleEventsMenu(Input* input)
 
 void Gui::HandleEventsBook(Input* input)
 {
-	//if (input->m_kDown & KEY_LEFT) { m_BookPage--; }
-	//if (input->m_kDown & KEY_RIGHT) { m_BookPage++; }
+	if (input->m_kDown & KEY_LEFT) { m_BookPage--; }
+	if (input->m_kDown & KEY_RIGHT) { m_BookPage++; }
 
-	//if (m_BookPage < 1) { m_BookPage = 1; }
+	if (m_BookPage < 1) { m_BookPage = 1; }
 
+	if (input->m_PosX >= 0 && input->m_PosX <= 99 && input->m_PosY >= 217 && input->m_PosY <= 241) {
+		input->running = false;
+	}
 
+	if (input->m_PosX >= 101 && input->m_PosX <= 221 && input->m_PosY >= 217 && input->m_PosY <= 241) {
+		// bookmark page
+	}	
 }
 
 void Gui::Update()
@@ -208,12 +216,17 @@ void Gui::DrawBook()
 {
 	sf2d_draw_texture(m_TextBG, 0, 0);
 
+	sftd_draw_text(m_Font, 20, 50, RGBA8(136, 111, 92, 255), 12, book->GetBook().c_str());
+	
+	//sftd_draw_text_wrap(sftd_font *font, int x, int y, unsigned int color, unsigned int size, unsigned int lineWidth, const char *text);
+	
 	//sftd_draw_text(m_Font, 10, 10, RGBA8(136, 111, 92, 255), 12, book->manifest[book->spine[0]].c_str());
 }
 
 void Gui::DrawControls()
 {
 	sf2d_draw_texture(m_Bottom, 0, 0);
+	sf2d_draw_texture(m_Controls, 0, 217);
 }
 
 void Gui::Reader()

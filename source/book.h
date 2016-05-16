@@ -15,6 +15,8 @@ public:
 
 	void ParseContainer();
 	void ParseOPF();
+
+	std::string GetBook();
 private:
 	std::string book;
 	std::string opf;
