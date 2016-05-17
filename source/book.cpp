@@ -10,8 +10,10 @@
 
 #include "BLUnZip.h"
 #include "tinyxml2.h"
-
+#include "litehtml.h"
 #include "book.h"
+
+#include "container_3ds.h"
 
 using namespace tinyxml2;
 
@@ -91,5 +93,15 @@ std::string Book::GetBook()
 	return book;
 }
 
-// iterate through <p> tags, store text using ->GetText(), then draw with text wrap and scrolling.
-// mehbeh lock to 60ups?
+void Book::Reader()
+{
+	litehtml::context ctx;
+	ctx.load_master_stylesheet(manifest["css"].c_str());
+	
+	container_3ds c3ds;
+
+	//litehtml::document::ptr doc = litehtml::document::createFromUTF8(manifest[spine[0]].c_str(), &c3ds, &ctx, 0);
+	
+	//doc->render(400);
+	///doc->draw(nullptr, 20, 20, nullptr);
+}
