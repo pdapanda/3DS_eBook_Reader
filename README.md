@@ -4,7 +4,7 @@ Instructions:
 > books go in 3DS/<app name>/books/
 
 # Credits:
-- AlbertoSonic for initial codebase.
+- AlbertoSonic for initial codebase and initial graphics.
 - litehtml for html rendering
 - xerpi for 2d graphics and text library
 - minizip for unzipping

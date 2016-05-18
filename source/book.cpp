@@ -100,8 +100,10 @@ void Book::Reader()
 	
 	container_3ds c3ds;
 
-	//litehtml::document::ptr doc = litehtml::document::createFromUTF8(manifest[spine[0]].c_str(), &c3ds, &ctx, 0);
-	
-	//doc->render(400);
-	///doc->draw(nullptr, 20, 20, nullptr);
+	litehtml::document::ptr doc;
+	// = litehtml::document::createFromUTF8(manifest[spine[0]].c_str(), &c3ds, &ctx, 0);
+	doc = litehtml::document::createFromUTF8("", &c3ds, &ctx);
+
+	doc->render(400);
+	//doc->draw(nullptr, 20, 20, nullptr);
 }

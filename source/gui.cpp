@@ -211,6 +211,7 @@ void Gui::OpenBook(const std::string& bookName)
 void Gui::CloseBook()
 {
 	delete book;
+	book = nullptr;
 }
 
 void Gui::DrawBook()
