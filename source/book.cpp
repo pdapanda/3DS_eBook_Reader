@@ -1,6 +1,4 @@
-// (c) 2016 AlbertoSonic & reworks
-// convert to xml to parse with tinyxml2.
-// only worry about paragraphs - by spitting text when getting <div> tag
+// (c) 2016 reworks
 // http://ideveloperworld.blogspot.com.au/2011/02/epub-reader.html
 
 // #include "tidy.h"
