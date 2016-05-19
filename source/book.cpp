@@ -1,4 +1,3 @@
-// (c) 2016 reworks
 // http://ideveloperworld.blogspot.com.au/2011/02/epub-reader.html
 
 // #include "tidy.h"
