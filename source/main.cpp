@@ -1,5 +1,3 @@
-// (c) 2016 AlbertoSonic & reworks
-
 #include "app.h"
 
 int main()
@@ -8,13 +6,16 @@ int main()
 
 	app.Init();
 
-	while (aptMainLoop() && app.input->running)
+	while (aptMainLoop())
 	{
-		app.Event();
-		app.Update();
-		app.Render();
+		while (app.input->running)
+		{
+			app.Event();
+			app.Update();
+			app.Render();
+		}
 	}
-
+	
 	app.End();
 
 	return 0;

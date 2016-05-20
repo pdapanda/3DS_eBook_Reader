@@ -1,5 +1,3 @@
-// (c) 2016 AlbertoSonic & reworks
-
 #ifndef INPUT_H
 #define INPUT_H
 

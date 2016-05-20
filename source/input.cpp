@@ -1,5 +1,3 @@
-// (c) 2016 AlbertoSonic & reworks
-
 #include "input.h"
 
 void Input::HandleEvents()

@@ -26,6 +26,7 @@ void Book::LoadBook(const std::string& epub)
 
 	ParseContainer();
 	ParseOPF();
+	ParsePages();
 }
 
 void Book::ParseContainer()
@@ -85,6 +86,17 @@ void Book::ParseOPF()
 	}
 }
 
+void Book::ParsePages()
+{
+	BLUnZip zipfile ( book );
+
+	for (unsigned int i = 0; i < spine.size(); ++i)
+	{
+		//std::string text = zipfile.ExtractToString(manifest[spine[i]].c_str());
+		//content.push_back(text);
+	}
+}
+
 std::string Book::GetBook()
 {
 	return book;
@@ -97,10 +109,10 @@ void Book::Reader()
 	
 	container_3ds c3ds;
 
-	litehtml::document::ptr doc;
-	// = litehtml::document::createFromUTF8(manifest[spine[0]].c_str(), &c3ds, &ctx, 0);
-	doc = litehtml::document::createFromUTF8("", &c3ds, &ctx);
+	//litehtml::document::ptr doc;
 
-	doc->render(400);
+	//doc = litehtml::document::createFromUTF8(content[8].c_str(), &c3ds, &ctx);
+
+	//doc->render(400);
 	//doc->draw(nullptr, 20, 20, nullptr);
 }

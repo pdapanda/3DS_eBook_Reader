@@ -1,9 +1,10 @@
-// (c) 2016 reworks
-
 #include <algorithm>
 #include <string> 
 #include <fstream>
 #include <streambuf>
+
+// remove when debugging done
+#include <iostream>
 
 #include <ft2build.h>
 #include FT_CACHE_H
@@ -25,7 +26,6 @@ litehtml::uint_ptr container_3ds::create_font(const litehtml::tchar_t* faceName,
 	FTC_FaceID face_id = (FTC_FaceID)m_Font->ifont;
 	FT_Face face;
 	FTC_Manager_LookupFace(sftd_get_manager(m_Font->ifont), face_id, &face);
-
 	m_Font->size = size;
 
 	int scale = face->size->metrics.y_scale;

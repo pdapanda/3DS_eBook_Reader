@@ -1,5 +1,3 @@
-// (c) 2016 AlbertoSonic & reworks
-
 #include <sfil.h>
 
 #include <cmath>
@@ -90,10 +88,6 @@ void Gui::HandleEventsMenu(Input* input)
 		}
 	}
 
-	if (input->m_PosX >= 0 && input->m_PosX <= 158 && input->m_PosY >= 217 && input->m_PosY <= 241) {
-		input->running = false;
-	}
-
 	if (input->m_PosX >= 159 && input->m_PosX <= 320 && input->m_PosY >= 217 && input->m_PosY <= 241) {
 		if (drawAbout == true) {
 			drawAbout = false;
@@ -110,6 +104,10 @@ void Gui::HandleEventsMenu(Input* input)
 	if (input->m_PosX >= 9 && input->m_PosX <= 31 && input->m_PosY >= 65 && input->m_PosY <= 137) {
 		m_curPage--; 
 		m_Index = 0;
+	}
+
+	if (input->m_PosX >= 0 && input->m_PosX <= 158 && input->m_PosY >= 217 && input->m_PosY <= 241) {
+		input->running = false;
 	}
 }
 

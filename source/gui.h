@@ -1,5 +1,3 @@
-// (c) 2016 AlbertoSonic & reworks
-
 #ifndef GUI_H
 #define GUI_H
 

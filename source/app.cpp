@@ -1,5 +1,3 @@
-// (c) 2016 AlbertoSonic & reworks
-
 #include <unistd.h>
 #include <sf2d.h>
 #include <sftd.h>

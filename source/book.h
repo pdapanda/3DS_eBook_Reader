@@ -15,6 +15,7 @@ public:
 
 	void ParseContainer();
 	void ParseOPF();
+	void ParsePages();
 
 	std::string GetBook();
 
@@ -29,6 +30,9 @@ public:
 
 	// order of book
 	std::vector<std::string> spine;
+
+	// contents of pages
+	std::vector<std::string> content;
 };
 
 #endif

@@ -1,5 +1,3 @@
-// (c) 2016 reworks
-
 #ifndef CONTAINER3DS_H
 #define CONTAINER3DS_H
 

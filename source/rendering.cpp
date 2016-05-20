@@ -1,5 +1,3 @@
-// (c) 2016 AlbertoSonic & reworks
-
 #include "rendering.h"
 
 #include <sf2d.h>

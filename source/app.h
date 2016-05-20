@@ -1,5 +1,3 @@
-// (c) 2016 AlbertoSonic & reworks
-
 #ifndef APP_H
 #define APP_H
 
