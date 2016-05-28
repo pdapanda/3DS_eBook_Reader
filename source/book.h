@@ -7,6 +7,8 @@
 #include <string>
 #include <unordered_map>
 
+#include "BLUnZip.h"
+
 class Book
 {
 public:
@@ -33,6 +35,8 @@ public:
 
 	// contents of pages
 	std::vector<std::string> content;
+
+	BLUnZip* zipfile;
 };
 
 #endif

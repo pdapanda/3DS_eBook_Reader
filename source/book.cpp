@@ -5,7 +5,6 @@
 
 #include <algorithm>
 
-#include "BLUnZip.h"
 #include "tinyxml2.h"
 #include "litehtml.h"
 #include "book.h"
@@ -14,15 +13,25 @@
 
 using namespace tinyxml2;
 
+std::string get_extension(const std::string& filename) {
+    size_t lastdot = filename.find_last_of(".");
+    if (lastdot == std::string::npos) return filename;
+    return filename.substr(lastdot, 4); 
+}
+
 Book::~Book()
 {
 	manifest.clear();
 	spine.clear();
+
+	delete zipfile;
 }
 
 void Book::LoadBook(const std::string& epub)
 {
 	book = epub;
+
+	zipfile = new BLUnZip (book);
 
 	ParseContainer();
 	ParseOPF();
@@ -31,8 +40,7 @@ void Book::LoadBook(const std::string& epub)
 
 void Book::ParseContainer()
 {
-	BLUnZip zipfile (book);
-	std::string unclean ( zipfile.ExtractToString("META-INF/container.xml") );
+	std::string unclean ( zipfile->ExtractToString("META-INF/container.xml") );
 /*
 	TidyBuffer output = {0};
 	TidyDoc tdoc = tidyCreate();
@@ -61,9 +69,7 @@ void Book::ParseContainer()
 
 void Book::ParseOPF()
 {
-	BLUnZip zipfile ( book );
-	
-	std::string unclean( zipfile.ExtractToString( opf ));
+	std::string unclean( zipfile->ExtractToString( opf ));
 	
 	XMLDocument doc;
     doc.Parse( unclean.c_str() );
@@ -88,12 +94,13 @@ void Book::ParseOPF()
 
 void Book::ParsePages()
 {
-	BLUnZip zipfile ( book );
-
 	for (unsigned int i = 0; i < spine.size(); ++i)
 	{
-		//std::string text = zipfile.ExtractToString(manifest[spine[i]].c_str());
-		//content.push_back(text);
+		if (get_extension(manifest[spine[i]]) == ".html") 
+		{
+			std::string text = zipfile->ExtractToString(manifest[spine[i]].c_str());
+			content.push_back(text);
+		}
 	}
 }
 
@@ -105,14 +112,15 @@ std::string Book::GetBook()
 void Book::Reader()
 {
 	litehtml::context ctx;
-	ctx.load_master_stylesheet(manifest["css"].c_str());
+	ctx.load_master_stylesheet(zipfile->ExtractToString(manifest["css"]).c_str());
 	
 	container_3ds c3ds;
 
-	//litehtml::document::ptr doc;
+	std::string test = "<html><head></head><body><p>Hello world!</p><p>Hello world 2!</p></body></html>";
+	//std::string test = zipfile->ExtractToString(manifest["css"]);
 
-	//doc = litehtml::document::createFromUTF8(content[8].c_str(), &c3ds, &ctx);
+	litehtml::document::ptr doc = litehtml::document::createFromUTF8(test.c_str(), &c3ds, &ctx);
 
-	//doc->render(400);
-	//doc->draw(nullptr, 20, 20, nullptr);
+	doc->render(400);
+	doc->draw(nullptr, 0, 20, nullptr);
 }
