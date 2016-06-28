@@ -1,7 +1,7 @@
 # Nintendo 3DS EBook Reader
 
 Instructions:
-> books go in 3DS/<app name>/books/
+> Place books in sdmc:/books/
 
 # Credits:
 - AlbertoSonic for initial codebase and initial graphics.
