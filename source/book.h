@@ -1,5 +1,3 @@
-// (c) 2016 AlbertoSonic & reworks
-
 #ifndef TEXTVIEW_H
 #define TEXTVIEW_H
 
@@ -7,24 +5,29 @@
 #include <string>
 #include <unordered_map>
 
-#include "BLUnZip.h"
+#include "rendering.h"
+#include "zip/BLUnZip.h"
 
 class Book
 {
 public:
 	~Book();
-	void LoadBook(const std::string& epub);
 
-	void ParseContainer();
-	void ParseOPF();
-	void ParsePages();
+	void LoadBook(const std::string& epub, Renderer& ren);
+
+	void ParseContainer(BLUnZip& zipfile);
+	void ParseOPF(BLUnZip& zipfile);
+	void ParsePages(BLUnZip& zipfile);
 
 	std::string GetBook();
 
-	void Reader();
+	void Reader(Renderer& ren);
+	void CloseBook(Renderer& ren);
 private:
 	std::string book;
 	std::string opf;
+
+	litehtml::document::ptr doc;
 
 public:
 	// id, href
@@ -35,8 +38,6 @@ public:
 
 	// contents of pages
 	std::vector<std::string> content;
-
-	BLUnZip* zipfile;
 };
 
 #endif

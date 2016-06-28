@@ -13,11 +13,12 @@ class Input;
 class Gui
 {
 public:
-	Gui();
 	~Gui();
 
-	void HandleEventsMenu(Input* input);
-	void HandleEventsBook(Input* input);
+	void Load();
+
+	void HandleEventsMenu(Input& input, Renderer& ren);
+	void HandleEventsBook(Input& input, Renderer& ren);
 	void Update();
 
 	// Top Screen
@@ -27,11 +28,11 @@ public:
 	// Bottom Screen
 	void DrawFileSelect();
 
-	void OpenBook(const std::string& bookName);
-	void CloseBook();
+	void OpenBook(const std::string& bookName, Renderer& ren);
+	void CloseBook(Renderer& ren);
 
 	// Top Screen
-	void DrawBook();
+	void DrawBook(Renderer& ren);
 
 	// Bottom Screen
 	void DrawControls();
@@ -71,7 +72,7 @@ private:
 	std::string remove_extension(const std::string& filename);
 	void RemoveBook(const std::string& file);
 
-	Book* book;
+	Book book;
 };
 
 #endif

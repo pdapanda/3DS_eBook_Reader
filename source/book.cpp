@@ -5,42 +5,11 @@
 
 #include <algorithm>
 
-#include "tinyxml2.h"
-#include "litehtml.h"
 #include "book.h"
-
-#include "container_3ds.h"
+#include "tinyxml2/tinyxml2.h"
 
 using namespace tinyxml2;
 
-std::string get_extension(const std::string& filename) {
-    size_t lastdot = filename.find_last_of(".");
-    if (lastdot == std::string::npos) return filename;
-    return filename.substr(lastdot, 4); 
-}
-
-Book::~Book()
-{
-	manifest.clear();
-	spine.clear();
-
-	delete zipfile;
-}
-
-void Book::LoadBook(const std::string& epub)
-{
-	book = epub;
-
-	zipfile = new BLUnZip (book);
-
-	ParseContainer();
-	ParseOPF();
-	ParsePages();
-}
-
-void Book::ParseContainer()
-{
-	std::string unclean ( zipfile->ExtractToString("META-INF/container.xml") );
 /*
 	TidyBuffer output = {0};
 	TidyDoc tdoc = tidyCreate();
@@ -57,6 +26,50 @@ void Book::ParseContainer()
     tidyBufFree(&output);
 	tidyRelease(tdoc);
 */
+
+std::string get_extension(const std::string& filename)
+{
+    size_t lastdot = filename.find_last_of(".");
+    if (lastdot == std::string::npos) return filename;
+    return filename.substr(lastdot, 4); 
+}
+
+Book::~Book()
+{
+	manifest.clear();
+	spine.clear();
+	content.clear();
+}
+
+void Book::CloseBook(Renderer& ren)
+{
+	manifest.clear();
+	spine.clear();
+	content.clear();
+
+	book = "";
+	opf = "";	
+}
+
+void Book::LoadBook(const std::string& epub, Renderer& ren)
+{
+	book = epub;
+	BLUnZip zp(book);
+
+	ParseContainer(zp);
+	ParseOPF(zp);
+	ParsePages(zp);
+
+	std::string test = "<html><head></head><body><p>Hello world!</p><p>Hi!</p></body></html>";
+	//std::string test = zipfile->ExtractToString(manifest["css"]);
+
+	doc = litehtml::document::createFromUTF8(test.c_str(), &ren.c3ds, &ren.ctx);
+}
+
+void Book::ParseContainer(BLUnZip& zipfile)
+{
+	std::string unclean ( zipfile.ExtractToString("META-INF/container.xml") );
+
 	XMLDocument doc;
     doc.Parse( unclean.c_str() );
 
@@ -67,9 +80,9 @@ void Book::ParseContainer()
     opf = rootfile->Attribute("full-path");
 }
 
-void Book::ParseOPF()
+void Book::ParseOPF(BLUnZip& zipfile)
 {
-	std::string unclean( zipfile->ExtractToString( opf ));
+	std::string unclean( zipfile.ExtractToString( opf ));
 	
 	XMLDocument doc;
     doc.Parse( unclean.c_str() );
@@ -92,13 +105,13 @@ void Book::ParseOPF()
 	}
 }
 
-void Book::ParsePages()
+void Book::ParsePages(BLUnZip& zipfile)
 {
 	for (unsigned int i = 0; i < spine.size(); ++i)
 	{
 		if (get_extension(manifest[spine[i]]) == ".html") 
 		{
-			std::string text = zipfile->ExtractToString(manifest[spine[i]].c_str());
+			std::string text = zipfile.ExtractToString(manifest[spine[i]].c_str());
 			content.push_back(text);
 		}
 	}
@@ -109,18 +122,8 @@ std::string Book::GetBook()
 	return book;
 }
 
-void Book::Reader()
+void Book::Reader(Renderer& ren)
 {
-	litehtml::context ctx;
-	ctx.load_master_stylesheet(zipfile->ExtractToString(manifest["css"]).c_str());
-	
-	container_3ds c3ds;
-
-	std::string test = "<html><head></head><body><p>Hello world!</p><p>Hello world 2!</p></body></html>";
-	//std::string test = zipfile->ExtractToString(manifest["css"]);
-
-	litehtml::document::ptr doc = litehtml::document::createFromUTF8(test.c_str(), &c3ds, &ctx);
-
 	doc->render(400);
-	doc->draw(nullptr, 0, 20, nullptr);
+	doc->draw(&ren.hdc, 0, 20, nullptr);
 }

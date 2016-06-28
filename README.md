@@ -13,3 +13,5 @@ Instructions:
 - BLUnzip for C++ minizip
 - zlib for zip functions
 - freetype2 for font manipulation
+
+- And of course everyone on #cakey - you guys were a huge help!

@@ -17,9 +17,9 @@ public:
 	void End();
 
 public:
-	Input* input;
-	Renderer* ren;
-	Gui* gui;
+	Input input;
+	Renderer ren;
+	Gui gui;
 };
 
 #endif

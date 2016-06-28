@@ -4,7 +4,7 @@
 #include <sf2d.h>
 #include <sftd.h>
 
-#include "litehtml.h"
+#include "litehtml/litehtml.h"
 
 struct sftd_font_extended
 {

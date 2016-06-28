@@ -160,6 +160,8 @@ void container_3ds::import_css(litehtml::tstring& text, const litehtml::tstring&
 
 	temp.assign((std::istreambuf_iterator<char>(readcss)),
             std::istreambuf_iterator<char>());
+
+	text = temp;
 }
 
 void container_3ds::set_clip(const litehtml::position& pos, const litehtml::border_radiuses& bdr_radius, bool valid_x, bool valid_y)

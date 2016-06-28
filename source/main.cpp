@@ -8,7 +8,7 @@ int main()
 
 	while (aptMainLoop())
 	{
-		while (app.input->running)
+		while (app.input.running)
 		{
 			app.Event();
 			app.Update();

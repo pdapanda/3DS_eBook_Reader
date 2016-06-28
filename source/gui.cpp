@@ -11,7 +11,25 @@
 #include "gui.h"
 #include "input.h"
 
-Gui::Gui()
+Gui::~Gui()
+{
+	sftd_free_font(m_Font);
+	sf2d_free_texture(m_Next);
+	sf2d_free_texture(m_Prev);
+	sf2d_free_texture(m_Top);
+	sf2d_free_texture(m_Bottom);
+	sf2d_free_texture(m_Exit);
+	sf2d_free_texture(m_Charging);
+	sf2d_free_texture(m_About);
+	sf2d_free_texture(m_Controls);
+	sf2d_free_texture(m_TextBG);
+
+	for(auto& v : m_BatteryLevels) {
+		sf2d_free_texture(v);
+	}
+}
+
+void Gui::Load()
 {
 	m_Font = sftd_load_font_file("res/font/LiberationSans-Regular.ttf");
 	m_Next = sfil_load_PNG_file("res/NextFM.png", SF2D_PLACE_RAM);
@@ -44,51 +62,29 @@ Gui::Gui()
 	closedir (dir);
 }
 
-Gui::~Gui()
+void Gui::HandleEventsMenu(Input& input, Renderer& ren)
 {
-	sftd_free_font(m_Font);
-	sf2d_free_texture(m_Next);
-	sf2d_free_texture(m_Prev);
-	sf2d_free_texture(m_Top);
-	sf2d_free_texture(m_Bottom);
-	sf2d_free_texture(m_Exit);
-	sf2d_free_texture(m_Charging);
-	sf2d_free_texture(m_About);
-	sf2d_free_texture(m_Controls);
-	sf2d_free_texture(m_TextBG);
-
-	for(auto& v : m_BatteryLevels) {
-		sf2d_free_texture(v);
-	}
-
-	if (book != nullptr) { 
-		delete book; 
-	}
-}
-
-void Gui::HandleEventsMenu(Input* input)
-{
-	if (input->m_kDown & KEY_UP) { m_Index--; }
-	if (input->m_kDown & KEY_DOWN) { m_Index++; }
-	if (input->m_kDown & KEY_LEFT) { m_curPage--; m_Index = 0; }
-	if (input->m_kDown & KEY_RIGHT) { m_curPage++; m_Index = 0; }
+	if (input.m_kDown & KEY_UP) { m_Index--; }
+	if (input.m_kDown & KEY_DOWN) { m_Index++; }
+	if (input.m_kDown & KEY_LEFT) { m_curPage--; m_Index = 0; }
+	if (input.m_kDown & KEY_RIGHT) { m_curPage++; m_Index = 0; }
 	
 	// correct values
 	if (m_Index < 0) m_Index = 0;
 	if (m_Index > 6) m_Index = 6;
 	if (m_curPage < 0) m_curPage = 0;
 
-	if (input->m_kDown & KEY_X) { RemoveBook(files[m_Index+(7*m_curPage)]); }
+	if (input.m_kDown & KEY_X) { RemoveBook(files[m_Index+(7*m_curPage)]); }
 
-	if (input->m_kDown & KEY_A) { 
+	if (input.m_kDown & KEY_A) { 
 		selected = files[m_Index+(7*m_curPage)]; 
 		if (selected != "") {
-			OpenBook(selected);
-			input->curMode = 1;
+			OpenBook(selected, ren);
+			input.curMode = 1;
 		}
 	}
 
-	if (input->m_PosX >= 159 && input->m_PosX <= 320 && input->m_PosY >= 217 && input->m_PosY <= 241) {
+	if (input.m_PosX >= 159 && input.m_PosX <= 320 && input.m_PosY >= 217 && input.m_PosY <= 241) {
 		if (drawAbout == true) {
 			drawAbout = false;
 		} else {
@@ -96,34 +92,34 @@ void Gui::HandleEventsMenu(Input* input)
 		}
 	}
 
-	if (input->m_PosX >= 295 && input->m_PosX <= 320 && input->m_PosY >= 65 && input->m_PosY <= 137) {
+	if (input.m_PosX >= 295 && input.m_PosX <= 320 && input.m_PosY >= 65 && input.m_PosY <= 137) {
 		m_curPage++; 
 		m_Index = 0;
 	}
 
-	if (input->m_PosX >= 9 && input->m_PosX <= 31 && input->m_PosY >= 65 && input->m_PosY <= 137) {
+	if (input.m_PosX >= 9 && input.m_PosX <= 31 && input.m_PosY >= 65 && input.m_PosY <= 137) {
 		m_curPage--; 
 		m_Index = 0;
 	}
 
-	if (input->m_PosX >= 0 && input->m_PosX <= 158 && input->m_PosY >= 217 && input->m_PosY <= 241) {
-		input->running = false;
+	if (input.m_PosX >= 0 && input.m_PosX <= 158 && input.m_PosY >= 217 && input.m_PosY <= 241) {
+		input.running = false;
 	}
 }
 
-void Gui::HandleEventsBook(Input* input)
+void Gui::HandleEventsBook(Input& input, Renderer& ren)
 {
-	if (input->m_kDown & KEY_LEFT) { m_BookPage--; }
-	if (input->m_kDown & KEY_RIGHT) { m_BookPage++; }
+	if (input.m_kDown & KEY_LEFT) { m_BookPage--; }
+	if (input.m_kDown & KEY_RIGHT) { m_BookPage++; }
 
 	if (m_BookPage < 1) { m_BookPage = 1; }
 
-	if (input->m_PosX >= 0 && input->m_PosX <= 99 && input->m_PosY >= 217 && input->m_PosY <= 241) {
-		input->curMode = 0;
-		CloseBook();
+	if (input.m_PosX >= 0 && input.m_PosX <= 99 && input.m_PosY >= 217 && input.m_PosY <= 241) {
+		input.curMode = 0;
+		CloseBook(ren);
 	}
 
-	if (input->m_PosX >= 101 && input->m_PosX <= 221 && input->m_PosY >= 217 && input->m_PosY <= 241) {
+	if (input.m_PosX >= 101 && input.m_PosX <= 221 && input.m_PosY >= 217 && input.m_PosY <= 241) {
 		// bookmark page
 	}	
 }
@@ -197,31 +193,28 @@ void Gui::DrawStatusScreen()
     }
 }
 
-void Gui::OpenBook(const std::string& bookName)
+void Gui::OpenBook(const std::string& bookName, Renderer& ren)
 {
-	book = new Book;
-
 	std::string fullBook = "books/"+bookName;
 
-	book->LoadBook(fullBook.c_str());
+	book.LoadBook(fullBook.c_str(), ren);
 }
 
-void Gui::CloseBook()
+void Gui::CloseBook(Renderer& ren)
 {
-	delete book;
-	book = nullptr;
+	book.CloseBook(ren);
 }
 
-void Gui::DrawBook()
+void Gui::DrawBook(Renderer& ren)
 {
 	sf2d_draw_texture(m_TextBG, 0, 0);
 
-	book->Reader();
-	// sftd_draw_text(m_Font, 20, 50, RGBA8(136, 111, 92, 255), 12, book->GetBook().c_str());
+	book.Reader(ren);
+	// sftd_draw_text(m_Font, 20, 50, RGBA8(136, 111, 92, 255), 12, book.GetBook().c_str());
 	
 	// sftd_draw_text_wrap(sftd_font *font, int x, int y, unsigned int color, unsigned int size, unsigned int lineWidth, const char *text);
 	
-	// sftd_draw_text(m_Font, 10, 10, RGBA8(136, 111, 92, 255), 12, book->manifest[book->spine[0]].c_str());
+	// sftd_draw_text(m_Font, 10, 10, RGBA8(136, 111, 92, 255), 12, book.manifest[book.spine[0]].c_str());
 }
 
 void Gui::DrawControls()
@@ -245,7 +238,8 @@ std::string Gui::clock()
 }
 
 // Thanks to http://stackoverflow.com/a/6417908
-std::string Gui::remove_extension(const std::string& filename) {
+std::string Gui::remove_extension(const std::string& filename)
+{
     size_t lastdot = filename.find_last_of(".");
     if (lastdot == std::string::npos) return filename;
     return filename.substr(0, lastdot); 

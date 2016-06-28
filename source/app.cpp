@@ -6,8 +6,11 @@
 
 #define MENU 0
 #define TEXT 1
-#define TO_MICROSECONDS 1000
-#define WAIT_MILLISECONDS 50
+
+int MilliToMicro(int millis)
+{
+	return millis * 1000;
+}
 
 void App::Init()
 {
@@ -22,73 +25,71 @@ void App::Init()
 	
 	sftd_init();
 
-	input = new Input;
-	gui = new Gui;
-	ren = new Renderer;
+	gui.Load();
 
-	input->curMode = MENU;
+	input.curMode = MENU;
 }
 
 void App::Event()
 {
-	input->HandleEvents();
+	input.HandleEvents();
 
 	// delay program to allow 3ds hardware to catch up.
-	usleep(WAIT_MILLISECONDS*TO_MICROSECONDS);
+	usleep(MilliToMicro(50));
 
-	if (input->m_kDown & KEY_START) {
-		input->running = false;
+	if (input.m_kDown & KEY_START) {
+		input.running = false;
 	}
 
-	switch (input->curMode)
+	switch (input.curMode)
 	{
 		case MENU:
-			gui->HandleEventsMenu(input);	
+			gui.HandleEventsMenu(input, ren);	
 		break;
 
 		case TEXT:
-			gui->HandleEventsBook(input);
+			gui.HandleEventsBook(input, ren);
 		break;
 	}
 }
 
 void App::Update()
 {
-	gui->Update();
+	gui.Update();
 }
 
 void App::Render()
 {
-	switch (input->curMode)
+	switch (input.curMode)
 	{
 		case MENU:
-			ren->StartDrawingTop();
+			ren.StartDrawingTop();
 
-				gui->DrawTopBackground();
-				gui->DrawStatusScreen();
+				gui.DrawTopBackground();
+				gui.DrawStatusScreen();
 				
-			ren->StopDrawing();
-			ren->StartDrawingBottom();
+			ren.StopDrawing();
+			ren.StartDrawingBottom();
 
-				gui->DrawFileSelect();
+				gui.DrawFileSelect();
 
-			ren->StopDrawing();
-			ren->Render();
+			ren.StopDrawing();
+			ren.Render();
 		break;
 
 		case TEXT:
-			ren->StartDrawingTop();
+			ren.StartDrawingTop();
 
-				gui->DrawBook();
-				gui->DrawStatusScreen();
+				gui.DrawBook(ren);
+				gui.DrawStatusScreen();
 				
-			ren->StopDrawing();
-			ren->StartDrawingBottom();
+			ren.StopDrawing();
+			ren.StartDrawingBottom();
 
-				gui->DrawControls();
+				gui.DrawControls();
 
-			ren->StopDrawing();
-			ren->Render();
+			ren.StopDrawing();
+			ren.Render();
 
 
 		break;
@@ -97,14 +98,10 @@ void App::Render()
 
 void App::End()
 {
-	delete input;
-	delete gui;
-	delete ren;
+	sftd_fini();
+	sf2d_fini();
 
 	ptmuExit();
 	hidExit();
 	aptExit();
-
-	sf2d_fini();
-	sftd_fini();
 }
