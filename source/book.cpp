@@ -59,11 +59,6 @@ void Book::LoadBook(const std::string& epub, Renderer& ren)
 	ParseContainer(zp);
 	ParseOPF(zp);
 	ParsePages(zp);
-
-	std::string test = "<html><head></head><body><p>Hello world!</p><p>Hi!</p></body></html>";
-	//std::string test = zipfile->ExtractToString(manifest["css"]);
-
-	doc = litehtml::document::createFromUTF8(test.c_str(), &ren.c3ds, &ren.ctx);
 }
 
 void Book::ParseContainer(BLUnZip& zipfile)
@@ -124,6 +119,5 @@ std::string Book::GetBook()
 
 void Book::Reader(Renderer& ren)
 {
-	doc->render(400);
-	doc->draw(&ren.hdc, 0, 20, nullptr);
+	
 }

@@ -5,7 +5,6 @@ Instructions:
 
 # Credits:
 - AlbertoSonic for initial codebase and initial graphics.
-- litehtml for html rendering
 - xerpi for 2d graphics and text library
 - minizip for unzipping
 - tinyxml2 for xml parsing

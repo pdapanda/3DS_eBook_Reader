@@ -27,8 +27,6 @@ private:
 	std::string book;
 	std::string opf;
 
-	litehtml::document::ptr doc;
-
 public:
 	// id, href
 	std::unordered_map<std::string, std::string> manifest;
