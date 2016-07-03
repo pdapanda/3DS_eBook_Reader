@@ -44,11 +44,11 @@ void App::Event()
 	switch (input.curMode)
 	{
 		case MENU:
-			gui.HandleEventsMenu(input, ren);	
+			gui.HandleEventsMenu(input);	
 		break;
 
 		case TEXT:
-			gui.HandleEventsBook(input, ren);
+			gui.HandleEventsBook(input);
 		break;
 	}
 }
@@ -80,7 +80,7 @@ void App::Render()
 		case TEXT:
 			ren.StartDrawingTop();
 
-				gui.DrawBook(ren);
+				gui.DrawBook(gui);
 				gui.DrawStatusScreen();
 				
 			ren.StopDrawing();

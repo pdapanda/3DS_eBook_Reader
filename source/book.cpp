@@ -4,8 +4,11 @@
 // #include "tidybuffio.h"
 
 #include <algorithm>
+#include <sstream>
 
-#include "book.h"
+#include <sftd.h>
+
+#include "gui.h" // includes book.h
 #include "tinyxml2/tinyxml2.h"
 
 using namespace tinyxml2;
@@ -29,9 +32,15 @@ using namespace tinyxml2;
 
 std::string get_extension(const std::string& filename)
 {
-    size_t lastdot = filename.find_last_of(".");
-    if (lastdot == std::string::npos) return filename;
-    return filename.substr(lastdot, 4); 
+    return filename.substr(filename.find_last_of(".")); 
+}
+
+template<typename T>
+std::string to_string(const T& value)
+{
+    std::ostringstream oss;
+    oss << value;
+    return oss.str();
 }
 
 Book::~Book()
@@ -41,7 +50,7 @@ Book::~Book()
 	content.clear();
 }
 
-void Book::CloseBook(Renderer& ren)
+void Book::CloseBook()
 {
 	manifest.clear();
 	spine.clear();
@@ -51,7 +60,7 @@ void Book::CloseBook(Renderer& ren)
 	opf = "";	
 }
 
-void Book::LoadBook(const std::string& epub, Renderer& ren)
+void Book::LoadBook(const std::string& epub)
 {
 	book = epub;
 	BLUnZip zp(book);
@@ -63,7 +72,7 @@ void Book::LoadBook(const std::string& epub, Renderer& ren)
 
 void Book::ParseContainer(BLUnZip& zipfile)
 {
-	std::string unclean ( zipfile.ExtractToString("META-INF/container.xml") );
+	std::string unclean( zipfile.ExtractToString("META-INF/container.xml") );
 
 	XMLDocument doc;
     doc.Parse( unclean.c_str() );
@@ -77,7 +86,7 @@ void Book::ParseContainer(BLUnZip& zipfile)
 
 void Book::ParseOPF(BLUnZip& zipfile)
 {
-	std::string unclean( zipfile.ExtractToString( opf ));
+	std::string unclean( zipfile.ExtractToString( opf ) );
 	
 	XMLDocument doc;
     doc.Parse( unclean.c_str() );
@@ -102,12 +111,13 @@ void Book::ParseOPF(BLUnZip& zipfile)
 
 void Book::ParsePages(BLUnZip& zipfile)
 {
-	for (unsigned int i = 0; i < spine.size(); ++i)
+	// spine.size();
+	for (unsigned int i = 0; i != 5; i++)
 	{
-		if (get_extension(manifest[spine[i]]) == ".html") 
+		if(get_extension(manifest[spine[i]]) == ".html")
 		{
-			std::string text = zipfile.ExtractToString(manifest[spine[i]].c_str());
-			content.push_back(text);
+			std::string page ( zipfile.ExtractToString( manifest[spine[i]]) );
+			content.push_back(page);
 		}
 	}
 }
@@ -117,7 +127,35 @@ std::string Book::GetBook()
 	return book;
 }
 
-void Book::Reader(Renderer& ren)
-{
+// loop through each element of body using nextsibling element
+// parse each subtree using iterate() fuction to parse all nodes in that.
+// keep going deeper until we exit.
+void Book::Reader(Gui& gui)
+{	
+	int ypos = 20;
+
+	std::string test = content[2];
 	
+	XMLDocument doc;
+	doc.Parse(test.c_str());
+
+	XMLElement* root = doc.FirstChildElement("html");
+
+	//XMLText* textNode = root->FirstChildElement("body")->FirstChild()->ToText();
+	//const char* text = textNode->Value();
+
+	//sftd_draw_text_wrap(gui.getFont(), 0, ypos, RGBA8(0, 0, 0, 255), 12, 400, text);
+
+	for (XMLElement* body = root->FirstChildElement("body"); body != nullptr; body = body->NextSibling())
+	{
+		std::string textFromElement = " ";
+		XMLText* textNode = body->FirstChild()->ToText();
+		if (textNode)
+		{
+			textFromElement = textNode->Value();
+		}
+
+		sftd_draw_text_wrap(gui.getFont(), 0, ypos, RGBA8(0, 0, 0, 255), 12, 400, textFromElement.c_str());
+		ypos += 10;
+	}
 }

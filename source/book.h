@@ -5,15 +5,17 @@
 #include <string>
 #include <unordered_map>
 
-#include "rendering.h"
 #include "zip/BLUnZip.h"
+
+// Forward dec
+class Gui;
 
 class Book
 {
 public:
 	~Book();
 
-	void LoadBook(const std::string& epub, Renderer& ren);
+	void LoadBook(const std::string& epub);
 
 	void ParseContainer(BLUnZip& zipfile);
 	void ParseOPF(BLUnZip& zipfile);
@@ -21,8 +23,8 @@ public:
 
 	std::string GetBook();
 
-	void Reader(Renderer& ren);
-	void CloseBook(Renderer& ren);
+	void Reader(Gui& gui);
+	void CloseBook();
 private:
 	std::string book;
 	std::string opf;

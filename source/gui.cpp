@@ -62,8 +62,18 @@ void Gui::Load()
 	closedir (dir);
 }
 
-void Gui::HandleEventsMenu(Input& input, Renderer& ren)
+void Gui::HandleEventsMenu(Input& input)
 {
+	if (loading)
+	{
+		if (selected != "")
+		{
+			OpenBook(selected);
+			loading = false;
+			input.curMode = 1;
+		}
+	}
+
 	if (input.m_kDown & KEY_UP) { m_Index--; }
 	if (input.m_kDown & KEY_DOWN) { m_Index++; }
 	if (input.m_kDown & KEY_LEFT) { m_curPage--; m_Index = 0; }
@@ -79,8 +89,7 @@ void Gui::HandleEventsMenu(Input& input, Renderer& ren)
 	if (input.m_kDown & KEY_A) { 
 		selected = files[m_Index+(7*m_curPage)]; 
 		if (selected != "") {
-			OpenBook(selected, ren);
-			input.curMode = 1;
+			loading = true;
 		}
 	}
 
@@ -107,7 +116,7 @@ void Gui::HandleEventsMenu(Input& input, Renderer& ren)
 	}
 }
 
-void Gui::HandleEventsBook(Input& input, Renderer& ren)
+void Gui::HandleEventsBook(Input& input)
 {
 	if (input.m_kDown & KEY_LEFT) { m_BookPage--; }
 	if (input.m_kDown & KEY_RIGHT) { m_BookPage++; }
@@ -116,7 +125,7 @@ void Gui::HandleEventsBook(Input& input, Renderer& ren)
 
 	if (input.m_PosX >= 0 && input.m_PosX <= 99 && input.m_PosY >= 217 && input.m_PosY <= 241) {
 		input.curMode = 0;
-		CloseBook(ren);
+		CloseBook();
 	}
 
 	if (input.m_PosX >= 101 && input.m_PosX <= 221 && input.m_PosY >= 217 && input.m_PosY <= 241) {
@@ -135,30 +144,37 @@ void Gui::DrawFileSelect()
 	sf2d_draw_texture(m_Bottom, 0, 0);
 	sf2d_draw_texture(m_Exit, 0, 217);
 
-	int pos = 20;
+	if (!loading)
+	{
+		int pos = 20;
 	
-	if (m_curPage == 0) {
-		begin = 0;
-		end = 7; 
-	} else {
-		begin = (7*m_curPage);
-		end = (7*m_curPage) + 6;
+		if (m_curPage == 0) {
+			begin = 0;
+			end = 7; 
+		} else {
+			begin = (7*m_curPage);
+			end = (7*m_curPage) + 6;
+		}
+
+		if (end > files.size()) {
+			end = files.size();
+		}
+
+		for (begin = begin; begin < end; ++begin) {
+			sftd_draw_text(m_Font, 57, pos, RGBA8(0, 0, 0 ,255), 12, files[begin].c_str());
+			pos += 20;
+		}
+
+		sftd_draw_text(m_Font, 45, (m_Index + 1) * 20, RGBA8(0, 0, 0, 255), 12, "->");
+		sf2d_draw_texture(m_Next, 295, 65);
+
+		if (m_curPage > 0) {
+			sf2d_draw_texture(m_Prev, 9, 65);
+		}
 	}
-
-	if (end > files.size()) {
-		end = files.size();
-	}
-
-	for (begin = begin; begin < end; ++begin) {
-		sftd_draw_text(m_Font, 57, pos, RGBA8(0, 0, 0 ,255), 12, files[begin].c_str());
-		pos += 20;
-	}
-
-	sftd_draw_text(m_Font, 45, (m_Index + 1) * 20, RGBA8(0, 0, 0, 255), 12, "->");
-	sf2d_draw_texture(m_Next, 295, 65);
-
-	if (m_curPage > 0) {
-		sf2d_draw_texture(m_Prev, 9, 65);
+	else
+	{
+		sftd_draw_text(m_Font, (320 / 2) - ( sftd_get_text_width(m_Font, 12, "Loading...") / 2), 100, RGBA8(0, 0, 0, 255), 12, "Loading...");
 	}
 }
 
@@ -193,28 +209,23 @@ void Gui::DrawStatusScreen()
     }
 }
 
-void Gui::OpenBook(const std::string& bookName, Renderer& ren)
+void Gui::OpenBook(const std::string& bookName)
 {
 	std::string fullBook = "books/"+bookName;
 
-	book.LoadBook(fullBook.c_str(), ren);
+	book.LoadBook(fullBook.c_str());
 }
 
-void Gui::CloseBook(Renderer& ren)
+void Gui::CloseBook()
 {
-	book.CloseBook(ren);
+	book.CloseBook();
 }
 
-void Gui::DrawBook(Renderer& ren)
+void Gui::DrawBook(Gui& gui)
 {
 	sf2d_draw_texture(m_TextBG, 0, 0);
 
-	book.Reader(ren);
-	// sftd_draw_text(m_Font, 20, 50, RGBA8(136, 111, 92, 255), 12, book.GetBook().c_str());
-	
-	// sftd_draw_text_wrap(sftd_font *font, int x, int y, unsigned int color, unsigned int size, unsigned int lineWidth, const char *text);
-	
-	// sftd_draw_text(m_Font, 10, 10, RGBA8(136, 111, 92, 255), 12, book.manifest[book.spine[0]].c_str());
+	book.Reader(gui);
 }
 
 void Gui::DrawControls()

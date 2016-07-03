@@ -17,8 +17,8 @@ public:
 
 	void Load();
 
-	void HandleEventsMenu(Input& input, Renderer& ren);
-	void HandleEventsBook(Input& input, Renderer& ren);
+	void HandleEventsMenu(Input& input);
+	void HandleEventsBook(Input& input);
 	void Update();
 
 	// Top Screen
@@ -28,16 +28,21 @@ public:
 	// Bottom Screen
 	void DrawFileSelect();
 
-	void OpenBook(const std::string& bookName, Renderer& ren);
-	void CloseBook(Renderer& ren);
+	void OpenBook(const std::string& bookName);
+	void CloseBook();
 
 	// Top Screen
-	void DrawBook(Renderer& ren);
+	void DrawBook(Gui& gui);
 
 	// Bottom Screen
 	void DrawControls();
 
 	std::string getSelected();
+
+	inline sftd_font* getFont()
+	{
+		return m_Font;
+	}
 
 private:
 	int m_Index = 0;
@@ -46,6 +51,7 @@ private:
 	unsigned int begin = 0;
 	unsigned int end = 7;
 	bool drawAbout = false;
+	bool loading = false;
 
 	sf2d_texture* m_Next;
 	sf2d_texture* m_Prev;
