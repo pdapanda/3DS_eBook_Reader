@@ -1,4 +1,6 @@
 # Nintendo 3DS EBook Reader
+[Download](https://github.com/reworks/3DS_eBook_Reader/releases/latest "Download the latest release here.")
+
 
 ## Instructions:
 Place books in a folder named "books" on the *root* of your SD card.
