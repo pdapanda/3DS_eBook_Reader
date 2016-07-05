@@ -11,6 +11,14 @@
 #include "gui.h"
 #include "input.h"
 
+// Thanks to http://stackoverflow.com/a/6417908
+std::string Gui::remove_extension(const std::string& filename)
+{
+    size_t lastdot = filename.find_last_of(".");
+    if (lastdot == std::string::npos) return filename;
+    return filename.substr(0, lastdot); 
+}
+
 Gui::~Gui()
 {
 	sftd_free_font(m_Font);
@@ -246,14 +254,6 @@ std::string Gui::clock()
 	temp = temp.substr(0, 16);
 
 	return temp;
-}
-
-// Thanks to http://stackoverflow.com/a/6417908
-std::string Gui::remove_extension(const std::string& filename)
-{
-    size_t lastdot = filename.find_last_of(".");
-    if (lastdot == std::string::npos) return filename;
-    return filename.substr(0, lastdot); 
 }
 
 void Gui::RemoveBook(const std::string& file)

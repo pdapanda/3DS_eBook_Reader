@@ -1,5 +1,5 @@
-#ifndef TEXTVIEW_H
-#define TEXTVIEW_H
+#ifndef BOOK_H
+#define BOOK_H
 
 #include <vector>
 #include <string>
@@ -21,10 +21,10 @@ public:
 	void ParseOPF(BLUnZip& zipfile);
 	void ParsePages(BLUnZip& zipfile);
 
-	std::string GetBook();
-
 	void Reader(Gui& gui);
 	void CloseBook();
+
+	std::string GetBook();
 private:
 	std::string book;
 	std::string opf;
@@ -36,8 +36,9 @@ public:
 	// order of book
 	std::vector<std::string> spine;
 
-	// contents of pages
-	std::vector<std::string> content;
+	// Text in page with spine as key
+	std::unordered_map<std::string, std::vector<std::string>> content;
+
 };
 
 #endif

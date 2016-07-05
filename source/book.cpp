@@ -10,25 +10,9 @@
 
 #include "gui.h" // includes book.h
 #include "tinyxml2/tinyxml2.h"
+#include "TextVisitor.h"
 
 using namespace tinyxml2;
-
-/*
-	TidyBuffer output = {0};
-	TidyDoc tdoc = tidyCreate();
-
-	tidyOptSetBool(tdoc, TidyXhtmlOut, yes);
-	tidyParseString(tdoc, unclean.c_str());
-	tidyCleanAndRepair(tdoc);
-	tidyRunDiagnostics(tdoc);
-	
-	tidySaveBuffer(tdoc, &output);
-	
-	std::string clean(output.bp, output.bp + output.size);
-
-    tidyBufFree(&output);
-	tidyRelease(tdoc);
-*/
 
 std::string get_extension(const std::string& filename)
 {
@@ -114,11 +98,16 @@ void Book::ParsePages(BLUnZip& zipfile)
 	// spine.size();
 	for (unsigned int i = 0; i != 5; i++)
 	{
-		if(get_extension(manifest[spine[i]]) == ".html")
-		{
-			std::string page ( zipfile.ExtractToString( manifest[spine[i]]) );
-			content.push_back(page);
-		}
+		TextVisitor tv;
+
+		std::string page ( zipfile.ExtractToString( manifest[spine[i]]) );
+
+		XMLDocument doc;
+		doc.Parse(page.c_str());
+		XMLElement* body = doc.FirstChildElement("html")->FirstChildElement("body");
+		body->Accept(&tv);
+
+		content.emplace(spine[i], tv.GetText());
 	}
 }
 
@@ -127,35 +116,24 @@ std::string Book::GetBook()
 	return book;
 }
 
-// loop through each element of body using nextsibling element
-// parse each subtree using iterate() fuction to parse all nodes in that.
-// keep going deeper until we exit.
 void Book::Reader(Gui& gui)
 {	
 	int ypos = 20;
 
-	std::string test = content[2];
-	
-	XMLDocument doc;
-	doc.Parse(test.c_str());
-
-	XMLElement* root = doc.FirstChildElement("html");
-
-	//XMLText* textNode = root->FirstChildElement("body")->FirstChild()->ToText();
-	//const char* text = textNode->Value();
-
-	//sftd_draw_text_wrap(gui.getFont(), 0, ypos, RGBA8(0, 0, 0, 255), 12, 400, text);
-
-	for (XMLElement* body = root->FirstChildElement("body"); body != nullptr; body = body->NextSibling())
+	/* Loop throught content
+	for (auto& it : content)
 	{
-		std::string textFromElement = " ";
-		XMLText* textNode = body->FirstChild()->ToText();
-		if (textNode)
+		// Loop through 
+		for (unsigned int i = 0; i < it.second.size(); i++)
 		{
-			textFromElement = textNode->Value();
-		}
 
-		sftd_draw_text_wrap(gui.getFont(), 0, ypos, RGBA8(0, 0, 0, 255), 12, 400, textFromElement.c_str());
-		ypos += 10;
+		}
+	}
+	*/
+	for (unsigned int i = 0; i < content[spine[3]].size(); i++)
+	{
+		std::string test = content[spine[3]][i];
+		sftd_draw_text_wrap(gui.getFont(), 0, ypos, RGBA8(0, 0, 0, 255), 12, 400, test.c_str());
+		ypos += 15;
 	}
 }
