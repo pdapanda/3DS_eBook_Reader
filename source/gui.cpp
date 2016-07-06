@@ -40,22 +40,22 @@ Gui::~Gui()
 void Gui::Load()
 {
 	m_Font = sftd_load_font_file("res/font/LiberationSans-Regular.ttf");
-	m_Next = sfil_load_PNG_file("res/NextFM.png", SF2D_PLACE_RAM);
-	m_Prev = sfil_load_PNG_file("res/PrevFM.png", SF2D_PLACE_RAM);
-	m_Top = sfil_load_PNG_file("res/top.png", SF2D_PLACE_RAM);
-	m_Bottom = sfil_load_PNG_file("res/bottom.png", SF2D_PLACE_RAM);
-	m_Exit = sfil_load_PNG_file("res/exit.png", SF2D_PLACE_RAM);
-	m_Charging = sfil_load_PNG_file("res/BatteryCharge.png", SF2D_PLACE_RAM);
-	m_About = sfil_load_PNG_file("res/about.png", SF2D_PLACE_RAM);
-	m_Controls = sfil_load_PNG_file("res/controls.png", SF2D_PLACE_RAM);
-	m_TextBG = sfil_load_PNG_file("res/text.png", SF2D_PLACE_RAM);
+	m_Next = sfil_load_PNG_file("res/NextFM.png", SF2D_PLACE_VRAM);
+	m_Prev = sfil_load_PNG_file("res/PrevFM.png", SF2D_PLACE_VRAM);
+	m_Top = sfil_load_PNG_file("res/top.png", SF2D_PLACE_VRAM);
+	m_Bottom = sfil_load_PNG_file("res/bottom.png", SF2D_PLACE_VRAM);
+	m_Exit = sfil_load_PNG_file("res/exit.png", SF2D_PLACE_VRAM);
+	m_Charging = sfil_load_PNG_file("res/BatteryCharge.png", SF2D_PLACE_VRAM);
+	m_About = sfil_load_PNG_file("res/about.png", SF2D_PLACE_VRAM);
+	m_Controls = sfil_load_PNG_file("res/controls.png", SF2D_PLACE_VRAM);
+	m_TextBG = sfil_load_PNG_file("res/text.png", SF2D_PLACE_VRAM);
 
-	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryEmpty.png", SF2D_PLACE_RAM));
-	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryLowest.png", SF2D_PLACE_RAM));
-	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryLow.png", SF2D_PLACE_RAM));
-	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryMid.png", SF2D_PLACE_RAM));
-	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryHigh.png", SF2D_PLACE_RAM));
-	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryFull.png", SF2D_PLACE_RAM));
+	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryEmpty.png", SF2D_PLACE_VRAM));
+	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryLowest.png", SF2D_PLACE_VRAM));
+	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryLow.png", SF2D_PLACE_VRAM));
+	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryMid.png", SF2D_PLACE_VRAM));
+	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryHigh.png", SF2D_PLACE_VRAM));
+	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryFull.png", SF2D_PLACE_VRAM));
 
 	DIR *dir;
 	struct dirent *ent;

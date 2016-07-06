@@ -28,6 +28,9 @@ public:
 private:
 	std::string book;
 	std::string opf;
+	
+	int page = 1;
+	int bookmark;
 
 public:
 	// id, href

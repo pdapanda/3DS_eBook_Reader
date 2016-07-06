@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <sstream>
+#include <cmath>
 
 #include <sftd.h>
 
@@ -25,6 +26,11 @@ std::string to_string(const T& value)
     std::ostringstream oss;
     oss << value;
     return oss.str();
+}
+
+double degrees_to_radians(double degrees)
+{
+	return degrees * M_PI / 180.0;
 }
 
 Book::~Book()
@@ -115,25 +121,48 @@ std::string Book::GetBook()
 {
 	return book;
 }
-
+/*
 void Book::Reader(Gui& gui)
 {	
 	int ypos = 20;
+	unsigned int curVectorPos = 0;
+	bool drawing = true;
 
-	/* Loop throught content
-	for (auto& it : content)
+	sf2d_rendertarget* target = sf2d_create_rendertarget(400, 240);
+
+	sf2d_start_frame_target(target);
+
+	while (drawing)
 	{
-		// Loop through 
-		for (unsigned int i = 0; i < it.second.size(); i++)
-		{
+		std::string textToDraw = content[spine[curVectorPos]];
 
-		}
+		ypos += 15;
+		curVectorPos++;
 	}
-	*/
+
 	for (unsigned int i = 0; i < content[spine[3]].size(); i++)
 	{
 		std::string test = content[spine[3]][i];
 		sftd_draw_text_wrap(gui.getFont(), 0, ypos, RGBA8(0, 0, 0, 255), 12, 400, test.c_str());
 		ypos += 15;
+
+		if (ypos >= 230)
+		{
+			break;
+		}
 	}
+
+	sf2d_end_frame();
+	sf2d_texture_tile32(target->texture);
+
+	// gotta draw sideways.
+	// draw on top screen then bottom
+
+	sf2d_draw_texture_rotate(target->texture, 0, 0, degrees_to_radians(90.0));
+}
+*/
+
+void Book::Reader(Gui& gui)
+{
+	// need to rethink implementation.
 }
