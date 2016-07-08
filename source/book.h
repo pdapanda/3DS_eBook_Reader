@@ -7,6 +7,8 @@
 
 #include "zip/BLUnZip.h"
 
+#include "point.h"
+
 // Forward dec
 class Gui;
 
@@ -25,6 +27,11 @@ public:
 	void CloseBook();
 
 	std::string GetBook();
+
+	// change these to use XML so we only need one file. use tinyxml2.
+	// multiple bookmarks?
+	void SaveBookmark(point pt);
+	point ReadBookmark();
 private:
 	std::string book;
 	std::string opf;

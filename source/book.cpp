@@ -5,6 +5,8 @@
 
 #include <algorithm>
 #include <sstream>
+#include <fstream>
+#include <iostream>
 #include <cmath>
 
 #include <sftd.h>
@@ -121,7 +123,7 @@ std::string Book::GetBook()
 {
 	return book;
 }
-/*
+
 void Book::Reader(Gui& gui)
 {	
 	int ypos = 20;
@@ -131,7 +133,7 @@ void Book::Reader(Gui& gui)
 	sf2d_rendertarget* target = sf2d_create_rendertarget(400, 240);
 
 	sf2d_start_frame_target(target);
-
+ 
 	while (drawing)
 	{
 		std::string textToDraw = content[spine[curVectorPos]];
@@ -160,9 +162,37 @@ void Book::Reader(Gui& gui)
 
 	sf2d_draw_texture_rotate(target->texture, 0, 0, degrees_to_radians(90.0));
 }
-*/
 
-void Book::Reader(Gui& gui)
+void Book::SaveBookmark(point pt)
 {
-	// need to rethink implementation.
+	std::string bookmarkFile = "bookmarks/" + book + ".bookmark";
+	std::ofstream bookmarkStream;
+
+	bookmarkStream.open(bookmarkFile);
+
+	bookmarkStream << pt.x << std::endl;
+	bookmarkStream << pt.y << std::endl;
+	bookmarkStream << pt.z << std::endl;
+
+	bookmarkStream.close();
+}
+
+point Book::ReadBookmark()
+{
+	point temp;
+	temp.x = temp.y = temp.z = 0;
+
+	std::string bookmarkFile = "bookmarks/" + book + ".bookmark";
+	std::ifstream bookmarkStream;
+	
+	if (bookmarkStream.open(bookmarkFile))
+	{
+		bookmarkStream >> temp.x >> std::endl;
+		bookmarkStream >> temp.y >> std::endl;
+		bookmarkStream >> temp.z >> std::endl;
+	}
+
+	bookmarkStream.close();
+
+	return temp;
 }
