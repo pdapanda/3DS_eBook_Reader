@@ -10,7 +10,6 @@
 
 #include "gui.h"
 #include "input.h"
-#include "rendering.h"
 
 // Thanks to http://stackoverflow.com/a/6417908
 std::string Gui::remove_extension(const std::string& filename)
@@ -22,15 +21,16 @@ std::string Gui::remove_extension(const std::string& filename)
 
 void Gui::Load()
 {
+	m_TextFont = sftd_load_font_file("res/font/SourceCodePro-Regular.ttf");
 	m_Font = sftd_load_font_file("res/font/LiberationSans-Regular.ttf");
 	m_Next = sfil_load_PNG_file("res/NextFM.png", SF2D_PLACE_VRAM);
 	m_Prev = sfil_load_PNG_file("res/PrevFM.png", SF2D_PLACE_VRAM);
 	m_Top = sfil_load_PNG_file("res/top.png", SF2D_PLACE_VRAM);
 	m_Bottom = sfil_load_PNG_file("res/bottom.png", SF2D_PLACE_VRAM);
+	m_Controls = sfil_load_PNG_file("res/controls.png", SF2D_PLACE_VRAM);
 	m_Exit = sfil_load_PNG_file("res/exit.png", SF2D_PLACE_VRAM);
 	m_Charging = sfil_load_PNG_file("res/BatteryCharge.png", SF2D_PLACE_VRAM);
 	m_About = sfil_load_PNG_file("res/about.png", SF2D_PLACE_VRAM);
-	m_Controls = sfil_load_PNG_file("res/controls.png", SF2D_PLACE_VRAM);
 	m_TextBG = sfil_load_PNG_file("res/text.png", SF2D_PLACE_VRAM);
 
 	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryEmpty.png", SF2D_PLACE_VRAM));
@@ -56,14 +56,15 @@ void Gui::Load()
 void Gui::Close()
 {
 	sftd_free_font(m_Font);
+	sftd_free_font(m_TextFont);
 	sf2d_free_texture(m_Next);
 	sf2d_free_texture(m_Prev);
+	sf2d_free_texture(m_Controls);
 	sf2d_free_texture(m_Top);
 	sf2d_free_texture(m_Bottom);
 	sf2d_free_texture(m_Exit);
 	sf2d_free_texture(m_Charging);
 	sf2d_free_texture(m_About);
-	sf2d_free_texture(m_Controls);
 	sf2d_free_texture(m_TextBG);
 
 	for(auto& v : m_BatteryLevels) {
@@ -130,16 +131,20 @@ void Gui::HandleEventsBook(Input& input)
 	if (input.m_kDown & KEY_LEFT) { m_BookPage--; }
 	if (input.m_kDown & KEY_RIGHT) { m_BookPage++; }
 
-	if (m_BookPage < 1) { m_BookPage = 1; }
+	if (m_BookPage < 0) { m_BookPage = 0; }
 
-	if (input.m_PosX >= 0 && input.m_PosX <= 99 && input.m_PosY >= 217 && input.m_PosY <= 241) {
+	if (input.m_PosX >= 20 && input.m_PosX <= 103 && input.m_PosY >= 18 && input.m_PosY <= 185) {
 		input.curMode = 0;
 		CloseBook();
 		selected = "";
 	}
 
-	if (input.m_PosX >= 101 && input.m_PosX <= 221 && input.m_PosY >= 217 && input.m_PosY <= 241) {
-		// bookmark page
+	if (input.m_PosX >= 120 && input.m_PosX <= 203 && input.m_PosY >= 18 && input.m_PosY <= 185) {
+		// load bookmark
+	}
+
+	if (input.m_PosX >= 219 && input.m_PosX <= 302 && input.m_PosY >= 18 && input.m_PosY <= 185) {
+		// save bookmark
 	}	
 }
 
@@ -236,15 +241,14 @@ void Gui::DrawTextBG()
 	sf2d_draw_texture(m_TextBG, 0, 0);
 }
 
-void Gui::DrawBook(Gui& gui, Renderer& ren)
+void Gui::DrawBook(Gui& gui)
 {
-	book.Reader(gui, ren);
+	book.Reader(gui);
 }
 
 void Gui::DrawControls()
 {
-	sf2d_draw_texture(m_Bottom, 0, 0);
-	sf2d_draw_texture(m_Controls, 0, 217);
+	sf2d_draw_texture(m_Controls, 0, 0);
 }
 
 std::string Gui::clock()

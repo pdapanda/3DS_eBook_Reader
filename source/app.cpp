@@ -78,9 +78,18 @@ void App::Render()
 		break;
 
 		case TEXT:
-			// all calls are in this
-			gui.DrawBook(gui, ren);
+			ren.StartDrawingTop();
+			
+				gui.DrawTextBG();
+				gui.DrawBook(gui);
+				gui.DrawStatusScreen();
+			
+			ren.StopDrawing();
+			ren.StartDrawingBottom();
+			
+				gui.DrawControls();
 				
+			ren.StopDrawing();
 			ren.Render();
 		break;
 	}

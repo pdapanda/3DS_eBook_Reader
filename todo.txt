@@ -1,9 +1,12 @@
-- support underline
-- support strikethrough
-- support italics
-- support bold
+- support underline, strikethrough, italics, bold
 - support formats other than .epub
-- support table of contents
 - support images
 - implement libtidy.
-- better parsing / font support.
+- 3d support?
+
+- bookmarks use xml.
+	- root is the name of the book file.
+	- each subnode is one of the bookmarks. this is then looped through and rendered
+
+- better text drawing - fix the cutoffs at end of line.
+- text formatting

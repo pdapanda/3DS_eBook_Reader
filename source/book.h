@@ -9,11 +9,11 @@
 
 // Forward dec
 class Gui;
-class Renderer;
 
 class Book
 {
 public:
+	Book();
 	~Book();
 
 	void LoadBook(const std::string& epub);
@@ -22,21 +22,16 @@ public:
 	void ParseOPF(BLUnZip& zipfile);
 	void ParsePages(BLUnZip& zipfile);
 
-	void Reader(Gui& gui, Renderer& ren);
+	void Reader(Gui& gui);
 	void CloseBook();
 
 	std::string GetBook();
 private:
 	std::string book = "";
 	std::string opf = "";
-	
-	int page = 1;
-	int bookmark = 1;
 
-	unsigned int curVectorPos = 0;
-	unsigned int oldCurVectorPos = 0;
-	unsigned int oldCurVectorPos2 = 0;
-	int pageOld = 0;
+	// supports everything but the '\' character.
+	std::string valid = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ`1234567890-=~!@#$^&*()_+[];',./{}|:<>?";
 
 public:
 	// id, href

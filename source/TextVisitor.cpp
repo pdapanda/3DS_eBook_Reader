@@ -1,4 +1,4 @@
-#include "TextVisitor.h"	
+#include "TextVisitor.h"
 
 bool TextVisitor::VisitEnter(const XMLDocument& doc)
 {
@@ -27,7 +27,13 @@ bool TextVisitor::Visit(const XMLDeclaration& declaration)
 
 bool TextVisitor::Visit(const XMLText& text)
 {
-	bookText.push_back(text.Value());
+	std::string t (text.Value());
+
+	// break text strings into 57 character lengths to fit on the screen.
+	for (unsigned int i = 0; i < t.length(); i += 57)
+	{
+		bookText.push_back(t.substr(i, 57));
+	}
 	
 	return true;
 }

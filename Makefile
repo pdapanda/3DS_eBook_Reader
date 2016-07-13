@@ -40,7 +40,7 @@ RUN_FLAGS :=
 
 TITLE := $(NAME)
 DESCRIPTION := Read eBooks on your 3DS!
-AUTHOR := reworks & AlbertoSONIC
+AUTHOR := reworks
 PRODUCT_CODE := CTR-H-EBOOK
 UNIQUE_ID := 0xEB00K
 

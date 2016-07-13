@@ -8,11 +8,11 @@
 #include <fstream>
 #include <iostream>
 #include <cmath>
+#include <numeric>
 
 #include "gui.h" // includes book.h
 #include "tinyxml2/tinyxml2.h"
 #include "TextVisitor.h"
-#include "rendering.h"
 
 using namespace tinyxml2;
 
@@ -34,6 +34,12 @@ double degrees_to_radians(double degrees)
 	return degrees * M_PI / 180.0;
 }
 
+Book::Book()
+{
+	valid += '"';
+	valid += '%';
+}
+
 Book::~Book()
 {
 	manifest.clear();
@@ -49,13 +55,6 @@ void Book::CloseBook()
 
 	book = "";
 	opf = "";	
-	page = 1;
-	bookmark = 1;
-
-	curVectorPos = 0;
-	oldCurVectorPos = 0;
-	oldCurVectorPos2 = 0;
-	pageOld = 0;
 }
 
 void Book::LoadBook(const std::string& epub)
@@ -109,6 +108,12 @@ void Book::ParseOPF(BLUnZip& zipfile)
 
 void Book::ParsePages(BLUnZip& zipfile)
 {
+	std::vector<char> filter(std::numeric_limits<unsigned char>::max(), 1);
+	for (unsigned char c: valid)
+	{
+    	filter[c] = 0;
+	}
+
 	// spine.size();
 	for (unsigned int i = 0; i != 7; i++)
 	{
@@ -125,6 +130,16 @@ void Book::ParsePages(BLUnZip& zipfile)
 		{
 			alltext.push_back(v);
 		}
+
+		// clean up text, remove any random / corrupt characters
+		// https://github.com/dietmarkuehl/cputube/blob/master/cpu/test/replace.cpp
+		for (auto& text : alltext)
+		{
+			text.erase(std::remove_if(text.begin(), text.end(),
+									  [&](unsigned char c)
+									  { return filter[c]; }
+									 ), text.end());
+		}
 	}
 }
 
@@ -133,150 +148,15 @@ std::string Book::GetBook()
 	return book;
 }
 
-void Book::Reader(Gui& gui, Renderer& ren)
+void Book::Reader(Gui& gui)
 {	
-	bool drawing = true;
-	int pageNew = gui.getBookPage();
-
-	// If we change page, draw the new text.
-	if (pageOld != pageNew)
+	int ypos = 20;	
+	
+	// 57 character limit using fixed width font, start at y = 20, 12 pixels spacing per line..., 18 lines per page top screen, max looping is 236
+	// bottom screen is same, except only 46 characters per line.
+	for (int i = (gui.getBookPage() * 18); i < ((gui.getBookPage() * 18) + 18); i++)
 	{
-		pageOld = pageNew;
-
-		// draw top screen
-		ren.StartDrawingTop();
-		gui.DrawTextBG();
-
-		int ypos = 20;
-		int yposAddition = 0;
-		int doNotUse = 0;
-		while (drawing)
-		{
-			std::string textToDraw = alltext[curVectorPos];
-
-			sftd_calc_bounding_box(&doNotUse, &yposAddition, gui.getFont(), 12, 400, textToDraw.c_str());
-			sftd_draw_text_wrap(gui.getFont(), 0, ypos, RGBA8(0, 0, 0, 255), 12, 400, textToDraw.c_str());
-
-			ypos += (15 + yposAddition);	
-
-			if (ypos >= 200)
-			{
-				drawing = false;
-			}
-			else
-			{
-				curVectorPos++;
-				if (curVectorPos == alltext.size())
-				{
-					curVectorPos--;
-				}
-			}
-		}
-
-		gui.DrawStatusScreen();
-		ren.StopDrawing();
-
-		// draw bottom screen
-		ren.StartDrawingBottom();
-
-		ypos = 20;
-		yposAddition = 0;
-		doNotUse = 0;
-		while (drawing)
-		{
-			std::string textToDraw = alltext[curVectorPos];
-
-			sftd_calc_bounding_box(&doNotUse, &yposAddition, gui.getFont(), 12, 400, textToDraw.c_str());
-			sftd_draw_text_wrap(gui.getFont(), 0, ypos, RGBA8(0, 0, 0, 255), 12, 400, textToDraw.c_str());
-
-			ypos += (15 + yposAddition);	
-
-			if (ypos >= 180)
-			{
-				drawing = false;
-			}
-			else
-			{
-				curVectorPos++;
-				if (curVectorPos == alltext.size())
-				{
-					curVectorPos--;
-				}
-			}
-		}
-		
-		gui.DrawControls();
-		ren.StopDrawing();
-
-		oldCurVectorPos = curVectorPos;
-		oldCurVectorPos2 = curVectorPos;
-	}
-	else
-	{
-		oldCurVectorPos = oldCurVectorPos2;
-		// draw top screen
-		ren.StartDrawingTop();
-		gui.DrawTextBG();
-
-		int ypos = 20;
-		int yposAddition = 0;
-		int doNotUse = 0;
-		while (drawing)
-		{
-			std::string textToDraw = alltext[oldCurVectorPos];
-
-			sftd_calc_bounding_box(&doNotUse, &yposAddition, gui.getFont(), 12, 400, textToDraw.c_str());
-			sftd_draw_text_wrap(gui.getFont(), 0, ypos, RGBA8(0, 0, 0, 255), 12, 400, textToDraw.c_str());
-
-			ypos += (15 + yposAddition);	
-
-			if (ypos >= 200)
-			{
-				drawing = false;
-			}
-			else
-			{
-				oldCurVectorPos++;
-				if (oldCurVectorPos == alltext.size())
-				{
-					oldCurVectorPos--;
-				}
-			}
-		}
-
-		gui.DrawStatusScreen();
-		ren.StopDrawing();
-
-		// draw bottom screen
-		ren.StartDrawingBottom();
-
-		ypos = 20;
-		yposAddition = 0;
-		doNotUse = 0;
-		while (drawing)
-		{
-			std::string textToDraw = alltext[oldCurVectorPos];
-
-			sftd_calc_bounding_box(&doNotUse, &yposAddition, gui.getFont(), 12, 400, textToDraw.c_str());
-			sftd_draw_text_wrap(gui.getFont(), 0, ypos, RGBA8(0, 0, 0, 255), 12, 400, textToDraw.c_str());
-
-			ypos += (15 + yposAddition);	
-
-			if (ypos >= 180)
-			{
-				drawing = false;
-			}
-			else
-			{
-				oldCurVectorPos++;
-				if (oldCurVectorPos == alltext.size())
-				{
-					oldCurVectorPos--;
-				}
-			}
-		}
-		
-		gui.DrawControls();
-		ren.StopDrawing();
+		sftd_draw_text(gui.getTextFont(), 0, ypos, RGBA8(0, 0, 0, 255), 12, alltext[i].c_str());
+		ypos += 12;
 	}
 }	

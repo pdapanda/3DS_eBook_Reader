@@ -9,7 +9,6 @@
 #include "book.h"
 
 class Input;
-class Renderer;
 
 class Gui
 {
@@ -33,16 +32,16 @@ public:
 	void CloseBook();
 
 	// Top Screen
-	void DrawBook(Gui& gui, Renderer& ren);
+	void DrawBook(Gui& gui);
 
 	// Bottom Screen
 	void DrawControls();
 
 	std::string getSelected();
 
-	inline sftd_font* getFont() const
+	inline sftd_font* getTextFont() const
 	{
-		return m_Font;
+		return m_TextFont;
 	}
 
 	inline int getBookPage() const
@@ -53,7 +52,7 @@ public:
 private:
 	int m_Index = 0;
 	int m_curPage = 0;
-	int m_BookPage = 1;
+	int m_BookPage = 0;
 	unsigned int begin = 0;
 	unsigned int end = 7;
 	bool drawAbout = false;
@@ -65,12 +64,13 @@ private:
 	sf2d_texture* m_Bottom;
 	sf2d_texture* m_Exit;
 	sf2d_texture* m_About;
+	sf2d_texture* m_Controls;
 	std::vector<sf2d_texture*> m_BatteryLevels;
 	sf2d_texture* m_Charging;
-	sf2d_texture* m_Controls;
 	sf2d_texture* m_TextBG;
 
 	sftd_font* m_Font;
+	sftd_font* m_TextFont;
 
 	std::vector<std::string> files;
 	std::string selected = "";
