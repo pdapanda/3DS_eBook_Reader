@@ -9,13 +9,13 @@
 #include "book.h"
 
 class Input;
+class Renderer;
 
 class Gui
 {
 public:
-	~Gui();
-
 	void Load();
+	void Close();
 
 	void HandleEventsMenu(Input& input);
 	void HandleEventsBook(Input& input);
@@ -24,6 +24,7 @@ public:
 	// Top Screen
 	void DrawTopBackground();
 	void DrawStatusScreen();
+	void DrawTextBG();
 
 	// Bottom Screen
 	void DrawFileSelect();
@@ -32,16 +33,21 @@ public:
 	void CloseBook();
 
 	// Top Screen
-	void DrawBook(Gui& gui);
+	void DrawBook(Gui& gui, Renderer& ren);
 
 	// Bottom Screen
 	void DrawControls();
 
 	std::string getSelected();
 
-	inline sftd_font* getFont()
+	inline sftd_font* getFont() const
 	{
 		return m_Font;
+	}
+
+	inline int getBookPage() const
+	{
+		return m_BookPage;
 	}
 
 private:

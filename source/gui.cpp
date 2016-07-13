@@ -10,6 +10,7 @@
 
 #include "gui.h"
 #include "input.h"
+#include "rendering.h"
 
 // Thanks to http://stackoverflow.com/a/6417908
 std::string Gui::remove_extension(const std::string& filename)
@@ -17,24 +18,6 @@ std::string Gui::remove_extension(const std::string& filename)
     size_t lastdot = filename.find_last_of(".");
     if (lastdot == std::string::npos) return filename;
     return filename.substr(0, lastdot); 
-}
-
-Gui::~Gui()
-{
-	sftd_free_font(m_Font);
-	sf2d_free_texture(m_Next);
-	sf2d_free_texture(m_Prev);
-	sf2d_free_texture(m_Top);
-	sf2d_free_texture(m_Bottom);
-	sf2d_free_texture(m_Exit);
-	sf2d_free_texture(m_Charging);
-	sf2d_free_texture(m_About);
-	sf2d_free_texture(m_Controls);
-	sf2d_free_texture(m_TextBG);
-
-	for(auto& v : m_BatteryLevels) {
-		sf2d_free_texture(v);
-	}
 }
 
 void Gui::Load()
@@ -68,6 +51,24 @@ void Gui::Load()
 	}
 	
 	closedir (dir);
+}
+
+void Gui::Close()
+{
+	sftd_free_font(m_Font);
+	sf2d_free_texture(m_Next);
+	sf2d_free_texture(m_Prev);
+	sf2d_free_texture(m_Top);
+	sf2d_free_texture(m_Bottom);
+	sf2d_free_texture(m_Exit);
+	sf2d_free_texture(m_Charging);
+	sf2d_free_texture(m_About);
+	sf2d_free_texture(m_Controls);
+	sf2d_free_texture(m_TextBG);
+
+	for(auto& v : m_BatteryLevels) {
+		sf2d_free_texture(v);
+	}
 }
 
 void Gui::HandleEventsMenu(Input& input)
@@ -134,6 +135,7 @@ void Gui::HandleEventsBook(Input& input)
 	if (input.m_PosX >= 0 && input.m_PosX <= 99 && input.m_PosY >= 217 && input.m_PosY <= 241) {
 		input.curMode = 0;
 		CloseBook();
+		selected = "";
 	}
 
 	if (input.m_PosX >= 101 && input.m_PosX <= 221 && input.m_PosY >= 217 && input.m_PosY <= 241) {
@@ -229,11 +231,14 @@ void Gui::CloseBook()
 	book.CloseBook();
 }
 
-void Gui::DrawBook(Gui& gui)
+void Gui::DrawTextBG()
 {
 	sf2d_draw_texture(m_TextBG, 0, 0);
+}
 
-	book.Reader(gui);
+void Gui::DrawBook(Gui& gui, Renderer& ren)
+{
+	book.Reader(gui, ren);
 }
 
 void Gui::DrawControls()

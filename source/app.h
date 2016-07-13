@@ -23,7 +23,3 @@ public:
 };
 
 #endif
-
-// roll own engine
-// parse xhtml struture until get to <body>
-// use gettext() for each element afterwards...

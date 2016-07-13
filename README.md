@@ -8,14 +8,13 @@ Place books in a folder named "books" on the *root* of your SD card.
 MUST BE IN A VALID AND COMPLIANT .EPUB FORMAT. DRM-FREE EBOOK SHOPS ARE YOUR BEST BET.
 
 ## Credits:
-- AlbertoSonic for initial codebase and initial graphics.
+- AlbertoSonic for initial codebase and graphics.
 - xerpi for SF2D, SFIL & SFTD
 - minizip for unzipping
 - tinyxml2 for xml parsing
 - BLUnzip for simplified C++ minizip
 - zlib for zip functions
 - freetype2 for font manipulation
-
 - And of course everyone on #cakey - you guys were a huge help!
 
 ## License:

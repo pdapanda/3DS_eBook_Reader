@@ -78,30 +78,22 @@ void App::Render()
 		break;
 
 		case TEXT:
-			ren.StartDrawingTop();
-
-				gui.DrawBook(gui);
-				gui.DrawStatusScreen();
+			// all calls are in this
+			gui.DrawBook(gui, ren);
 				
-			ren.StopDrawing();
-			ren.StartDrawingBottom();
-
-				gui.DrawControls();
-
-			ren.StopDrawing();
 			ren.Render();
-
-
 		break;
 	}
 }
 
 void App::End()
 {
+	gui.Close();
+
 	sftd_fini();
 	sf2d_fini();
 
-	ptmuExit();
 	hidExit();
+	ptmuExit();
 	aptExit();
 }

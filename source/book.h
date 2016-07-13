@@ -7,10 +7,9 @@
 
 #include "zip/BLUnZip.h"
 
-#include "point.h"
-
 // Forward dec
 class Gui;
+class Renderer;
 
 class Book
 {
@@ -23,21 +22,21 @@ public:
 	void ParseOPF(BLUnZip& zipfile);
 	void ParsePages(BLUnZip& zipfile);
 
-	void Reader(Gui& gui);
+	void Reader(Gui& gui, Renderer& ren);
 	void CloseBook();
 
 	std::string GetBook();
-
-	// change these to use XML so we only need one file. use tinyxml2.
-	// multiple bookmarks?
-	void SaveBookmark(point pt);
-	point ReadBookmark();
 private:
-	std::string book;
-	std::string opf;
+	std::string book = "";
+	std::string opf = "";
 	
 	int page = 1;
-	int bookmark;
+	int bookmark = 1;
+
+	unsigned int curVectorPos = 0;
+	unsigned int oldCurVectorPos = 0;
+	unsigned int oldCurVectorPos2 = 0;
+	int pageOld = 0;
 
 public:
 	// id, href
@@ -46,8 +45,8 @@ public:
 	// order of book
 	std::vector<std::string> spine;
 
-	// Text in page with spine as key
-	std::unordered_map<std::string, std::vector<std::string>> content;
+	// All the text in the book.
+	std::vector<std::string> alltext;
 
 };
 

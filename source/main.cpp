@@ -6,14 +6,13 @@ int main()
 
 	app.Init();
 
-	while (aptMainLoop())
+	while (app.input.running)
 	{
-		while (app.input.running)
-		{
-			app.Event();
-			app.Update();
-			app.Render();
-		}
+		aptMainLoop();
+		
+		app.Event();
+		app.Update();
+		app.Render();
 	}
 	
 	app.End();
