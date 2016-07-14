@@ -10,7 +10,6 @@
 #include <numeric>
 
 #include "gui.h" // includes book.h
-#include "tinyxml2/tinyxml2.h"
 #include "TextVisitor.h"
 
 using namespace tinyxml2;
