@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cstdio>
+#include <sstream>
 #include <dirent.h> 
 #include <fstream>
 
@@ -21,6 +22,19 @@ std::string Gui::remove_extension(const std::string& filename)
     size_t lastdot = filename.find_last_of(".");
     if (lastdot == std::string::npos) return filename;
     return filename.substr(0, lastdot); 
+}
+
+std::string Gui::get_extension(const std::string& filename)
+{
+    return filename.substr(filename.find_last_of(".")); 
+}
+
+template<typename T>
+std::string to_string(const T& value)
+{
+    std::ostringstream oss;
+    oss << value;
+    return oss.str();
 }
 
 void Gui::Load()
@@ -52,7 +66,10 @@ void Gui::Load()
 
 	while ((ent = readdir (dir)) != nullptr	)
 	{
-	    files.push_back(ent->d_name);
+	    if (get_extension(ent->d_name) == ".epub")
+	    {
+	    	files.push_back(ent->d_name);
+	    }
 	}
 	
 	closedir (dir);
@@ -134,35 +151,78 @@ void Gui::HandleEventsMenu(Input& input)
 
 void Gui::HandleEventsBook(Input& input)
 {
-	if (bookmarked)
+	if (!showBookmarks)
 	{
-		if (input.m_PosX >= 0 && input.m_PosX <= 320 && input.m_PosY >= 0 && input.m_PosY <= 240) {
-			bookmarked = false;
+		if (bookmarked)
+		{
+			if (input.m_PosX >= 20 && input.m_PosX <= 300 && input.m_PosY >= 20 && input.m_PosY <= 220) {
+				bookmarked = false;
+			}
 		}
+		else
+		{
+			if (input.m_kDown & KEY_LEFT) { m_BookPage--; }
+			if (input.m_kDown & KEY_RIGHT) { m_BookPage++; }
+
+			if (m_BookPage < 0) { m_BookPage = 0; }
+
+			if (input.m_PosX >= 20 && input.m_PosX <= 103 && input.m_PosY >= 18 && input.m_PosY <= 185) {
+				input.curMode = 0;
+				CloseBook();
+				selected = "";
+				m_BookPage = 0;
+			}
+
+			if (input.m_PosX >= 120 && input.m_PosX <= 203 && input.m_PosY >= 18 && input.m_PosY <= 185) {
+				LoadBookmark();
+			}
+
+			if (input.m_PosX >= 219 && input.m_PosX <= 302 && input.m_PosY >= 18 && input.m_PosY <= 185) {
+				bookmarked = true;
+				SaveBookmark();
+			}
+		}	
 	}
 	else
 	{
-		if (input.m_kDown & KEY_LEFT) { m_BookPage--; }
-		if (input.m_kDown & KEY_RIGHT) { m_BookPage++; }
+		if (input.m_kDown & KEY_UP) { m_IndexBookmark--; }
+		if (input.m_kDown & KEY_DOWN) { m_IndexBookmark++; }
+		if (input.m_kDown & KEY_LEFT) { m_curPageBookmark--; m_IndexBookmark = 0; }
+		if (input.m_kDown & KEY_RIGHT) { m_curPageBookmark++; m_IndexBookmark = 0; }
+		
+		// correct values
+		if (m_IndexBookmark < 0) m_IndexBookmark = 0;
+		if (m_IndexBookmark > 6) m_IndexBookmark = 6;
+		if (m_curPageBookmark < 0) m_curPageBookmark = 0;
 
-		if (m_BookPage < 0) { m_BookPage = 0; }
+		if (input.m_kDown & KEY_X) { RemoveBookmark(m_IndexBookmark+(7*m_curPageBookmark)); }
 
-		if (input.m_PosX >= 20 && input.m_PosX <= 103 && input.m_PosY >= 18 && input.m_PosY <= 185) {
-			input.curMode = 0;
-			CloseBook();
-			selected = "";
-			m_BookPage = 0;
+		if (input.m_kDown & KEY_A) { 
+			m_BookPage = bookmarkedPages[m_IndexBookmark+(7*m_curPageBookmark)]; 
 		}
 
-		if (input.m_PosX >= 120 && input.m_PosX <= 203 && input.m_PosY >= 18 && input.m_PosY <= 185) {
-			LoadBookmark();
+		if (input.m_PosX >= 159 && input.m_PosX <= 320 && input.m_PosY >= 217 && input.m_PosY <= 241) {
+			if (drawAbout == true) {
+				drawAbout = false;
+			} else {
+				drawAbout = true;
+			}
 		}
 
-		if (input.m_PosX >= 219 && input.m_PosX <= 302 && input.m_PosY >= 18 && input.m_PosY <= 185) {
-			bookmarked = true;
-			SaveBookmark();
+		if (input.m_PosX >= 295 && input.m_PosX <= 320 && input.m_PosY >= 65 && input.m_PosY <= 137) {
+			m_curPageBookmark++; 
+			m_IndexBookmark = 0;
 		}
-	}	
+
+		if (input.m_PosX >= 9 && input.m_PosX <= 31 && input.m_PosY >= 65 && input.m_PosY <= 137) {
+			m_curPageBookmark--; 
+			m_IndexBookmark = 0;
+		}
+
+		if (input.m_PosX >= 0 && input.m_PosX <= 158 && input.m_PosY >= 217 && input.m_PosY <= 241) {
+			showBookmarks = false;
+		}
+	}
 }
 
 void Gui::Update()
@@ -260,7 +320,14 @@ void Gui::DrawTextBG()
 
 void Gui::DrawBook(Gui& gui)
 {
-	book.Reader(gui);
+	if (!drawAbout)
+	{
+		book.Reader(gui);
+	}
+	else
+	{
+		sf2d_draw_texture(m_About, 0, 0);
+	}
 }
 
 void Gui::DrawControls()
@@ -268,6 +335,38 @@ void Gui::DrawControls()
 	if (bookmarked)
 	{
 		sf2d_draw_texture(m_BookmarkedBG, 0, 0);
+	}
+	else if (showBookmarks)
+	{
+		sf2d_draw_texture(m_Bottom, 0, 0);
+		sf2d_draw_texture(m_Exit, 0, 217);
+
+		int pos = 20;
+
+		if (m_curPageBookmark == 0) {
+			beginBookmark = 0;
+			endBookmark = 7; 
+		} else {
+			beginBookmark = (7*m_curPageBookmark);
+			endBookmark = (7*m_curPageBookmark) + 6;
+		}
+
+		if (endBookmark > bookmarkedPages.size()) {
+			endBookmark = bookmarkedPages.size();
+		}
+
+		for (beginBookmark = beginBookmark; beginBookmark < endBookmark; ++beginBookmark) {
+			std::string bob = "Page " + to_string<int>(bookmarkedPages[beginBookmark]); 
+			sftd_draw_text(m_Font, 57, pos, RGBA8(0, 0, 0 ,255), 12, bob.c_str());
+			pos += 20;
+		}
+
+		sftd_draw_text(m_Font, 45, (m_IndexBookmark + 1) * 20, RGBA8(0, 0, 0, 255), 12, "->");
+		sf2d_draw_texture(m_Next, 295, 65);
+
+		if (m_curPageBookmark > 0) {
+			sf2d_draw_texture(m_Prev, 9, 65);
+		}
 	}
 	else
 	{
@@ -277,10 +376,40 @@ void Gui::DrawControls()
 
 void Gui::LoadBookmark()
 {
-	// show a popup and some kind of list...
-	std::vector<int> bookmarkedPages;
+	bookmarkedPages.clear();
 
 	std::ifstream in("books/bookmarks.xml");
+	std::string line, text;
+
+	if (!in.fail())
+	{
+		while(std::getline(in, line))
+		{
+			text += line + "\n";
+		}
+
+		in.close();
+
+		XMLDocument doc;
+		doc.Parse(text.c_str());
+
+		// get root bookmarks element
+		XMLElement* root = doc.FirstChildElement("bookmarks");
+
+		for (XMLElement* e = root->FirstChildElement("bookmark"); e != nullptr; e = e->NextSiblingElement("bookmark"))
+		{
+			if (e->Attribute("book") == selected)
+			{
+				bookmarkedPages.push_back(e->IntAttribute("page"));
+			}
+		}
+
+		showBookmarks = true;
+	}
+	else
+	{
+		in.close();
+	}
 }
 
 void Gui::SaveBookmark()
@@ -303,7 +432,7 @@ void Gui::SaveBookmark()
 		// get root bookmarks element
 		XMLElement* root = doc.FirstChildElement("bookmarks");
 
-			// create a new element with the name of the book
+		// create a new element with the name of the book
 		XMLElement* bookmarkElement = doc.NewElement("bookmark");
 		bookmarkElement->SetAttribute("book", selected.c_str());
 
@@ -371,4 +500,47 @@ void Gui::RemoveBook(const std::string& file)
 	// erase book from vector
 	files.erase(std::find(files.begin(), files.end(), file));
 	files.shrink_to_fit();
+}
+
+void Gui::RemoveBookmark(int element)
+{
+	bookmarkedPages.erase(bookmarkedPages.begin() + element);
+	bookmarkedPages.shrink_to_fit();
+
+	std::ifstream in("books/bookmarks.xml");
+	std::string line, text;
+
+	if (!in.fail())
+	{
+		while(std::getline(in, line))
+		{
+			text += line + "\n";
+		}
+
+		in.close();
+
+		XMLDocument doc;
+		doc.Parse(text.c_str());
+
+		// get root bookmarks element
+		XMLElement* root = doc.FirstChildElement("bookmarks");
+
+		for (XMLElement* e = root->FirstChildElement("bookmark"); e != nullptr; e = e->NextSiblingElement("bookmark"))
+		{
+			if (e->Attribute("book") == selected)
+			{
+				if (e->IntAttribute("page") == bookmarkedPages[element])
+				{
+					doc.DeleteNode(e);
+				}
+			}
+		}
+
+		doc.SaveFile("books/bookmarks.xml");
+	}
+	else
+	{
+		in.close();
+	}
+
 }

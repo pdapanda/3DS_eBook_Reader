@@ -3,7 +3,8 @@
 - support images
 - implement libtidy.
 - 3d support?
-- bookmarked pages are flagged
+- better handling of bookmarks.
 - better text drawing - fix the cutoffs at end of line.
 - text formatting
 - clean and document code
+- improve speed

@@ -48,12 +48,17 @@ private:
 
 	int m_Index = 0;
 	int m_curPage = 0;
+	int m_IndexBookmark = 0;
+	int m_curPageBookmark = 0;
 	int m_BookPage = 0;
 	unsigned int begin = 0;
 	unsigned int end = 7;
+	unsigned int beginBookmark = 0;
+	unsigned int endBookmark = 7;
 	bool drawAbout = false;
 	bool loading = false;
 	bool bookmarked = false;
+	bool showBookmarks = false;
 
 	sf2d_texture* m_Next;
 	sf2d_texture* m_Prev;
@@ -71,6 +76,7 @@ private:
 	sftd_font* m_TextFont;
 
 	std::vector<std::string> files;
+	std::vector<int> bookmarkedPages;
 	std::string selected = "";
 
 	u32 wifiStatus = 0;
@@ -80,10 +86,12 @@ private:
 private:
 	std::string clock();
 	std::string remove_extension(const std::string& filename);
+	std::string get_extension(const std::string& filename);
 	
 	void RemoveBook(const std::string& file);
 	void LoadBookmark();
 	void SaveBookmark();
+	void RemoveBookmark(int element);
 };
 
 #endif

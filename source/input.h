@@ -8,9 +8,6 @@ class Input
 public:
 	void HandleEvents();
 
-private:
-	touchPosition touch;
-
 public:
 	u16 m_PosX;
 	u16 m_PosY;

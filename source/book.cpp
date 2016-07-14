@@ -4,7 +4,6 @@
 // #include "tidybuffio.h"
 
 #include <algorithm>
-#include <sstream>
 #include <fstream>
 #include <iostream>
 #include <cmath>
@@ -15,19 +14,6 @@
 #include "TextVisitor.h"
 
 using namespace tinyxml2;
-
-std::string get_extension(const std::string& filename)
-{
-    return filename.substr(filename.find_last_of(".")); 
-}
-
-template<typename T>
-std::string to_string(const T& value)
-{
-    std::ostringstream oss;
-    oss << value;
-    return oss.str();
-}
 
 double degrees_to_radians(double degrees)
 {
