@@ -7,4 +7,5 @@
 - better text drawing - fix the cutoffs at end of line.
 - text formatting
 - clean and document code
-- improve speed
+- fix display of files on bottom screen (7 then 6?)
+- fix multiples of ''' characters

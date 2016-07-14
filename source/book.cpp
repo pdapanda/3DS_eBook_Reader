@@ -19,12 +19,6 @@ double degrees_to_radians(double degrees)
 	return degrees * M_PI / 180.0;
 }
 
-Book::Book()
-{
-	valid += '"';
-	valid += '%';
-}
-
 Book::~Book()
 {
 	manifest.clear();
@@ -119,11 +113,13 @@ void Book::ParsePages(BLUnZip& zipfile)
 		// clean up text, remove any random / corrupt characters
 		// https://github.com/dietmarkuehl/cputube/blob/master/cpu/test/replace.cpp
 		for (auto& text : alltext)
-		{
+		{/*
 			text.erase(std::remove_if(text.begin(), text.end(),
 									  [&](unsigned char c)
 									  { return filter[c]; }
 									 ), text.end());
+									 */
+			std::replace_if(text.begin(), text.end(), [&](unsigned char c) { return filter[c]; }, '\'');
 		}
 	}
 }

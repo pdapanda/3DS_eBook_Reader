@@ -24,7 +24,7 @@ void App::Init()
 	sf2d_set_vblank_wait(0);
 	
 	sftd_init();
-
+	
 	gui.Load();
 
 	input.curMode = MENU;

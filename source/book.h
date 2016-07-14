@@ -13,7 +13,6 @@ class Gui;
 class Book
 {
 public:
-	Book();
 	~Book();
 
 	void LoadBook(const std::string& epub);
@@ -31,7 +30,7 @@ private:
 	std::string opf = "";
 
 	// supports everything but the '\' character.
-	std::string valid = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ`1234567890-=~!@#$^&*()_+[];',./{}|:<>?";
+	std::string valid = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ`1234567890-=~!@#$^&*()\"_+[];,./{}|:<>'?%";
 
 public:
 	// id, href
