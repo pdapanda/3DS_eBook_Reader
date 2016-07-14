@@ -109,7 +109,7 @@ void Book::ParseOPF(BLUnZip& zipfile)
 void Book::ParsePages(BLUnZip& zipfile)
 {
 	std::vector<char> filter(std::numeric_limits<unsigned char>::max(), 1);
-	for (unsigned char c: valid)
+	for (unsigned char c : valid)
 	{
     	filter[c] = 0;
 	}

@@ -39,17 +39,13 @@ public:
 
 	std::string getSelected();
 
-	inline sftd_font* getTextFont() const
-	{
-		return m_TextFont;
-	}
+	sftd_font* getTextFont();
 
-	inline int getBookPage() const
-	{
-		return m_BookPage;
-	}
+	int getBookPage();
 
 private:
+	Book book;
+
 	int m_Index = 0;
 	int m_curPage = 0;
 	int m_BookPage = 0;
@@ -57,6 +53,7 @@ private:
 	unsigned int end = 7;
 	bool drawAbout = false;
 	bool loading = false;
+	bool bookmarked = false;
 
 	sf2d_texture* m_Next;
 	sf2d_texture* m_Prev;
@@ -65,9 +62,10 @@ private:
 	sf2d_texture* m_Exit;
 	sf2d_texture* m_About;
 	sf2d_texture* m_Controls;
-	std::vector<sf2d_texture*> m_BatteryLevels;
 	sf2d_texture* m_Charging;
 	sf2d_texture* m_TextBG;
+	sf2d_texture* m_BookmarkedBG;
+	std::vector<sf2d_texture*> m_BatteryLevels;
 
 	sftd_font* m_Font;
 	sftd_font* m_TextFont;
@@ -82,9 +80,10 @@ private:
 private:
 	std::string clock();
 	std::string remove_extension(const std::string& filename);
+	
 	void RemoveBook(const std::string& file);
-
-	Book book;
+	void LoadBookmark();
+	void SaveBookmark();
 };
 
 #endif

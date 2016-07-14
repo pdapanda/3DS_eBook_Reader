@@ -7,9 +7,13 @@
 #include <cstdlib>
 #include <cstdio>
 #include <dirent.h> 
+#include <fstream>
 
 #include "gui.h"
 #include "input.h"
+#include "tinyxml2/tinyxml2.h"
+
+using namespace tinyxml2;
 
 // Thanks to http://stackoverflow.com/a/6417908
 std::string Gui::remove_extension(const std::string& filename)
@@ -32,6 +36,7 @@ void Gui::Load()
 	m_Charging = sfil_load_PNG_file("res/BatteryCharge.png", SF2D_PLACE_VRAM);
 	m_About = sfil_load_PNG_file("res/about.png", SF2D_PLACE_VRAM);
 	m_TextBG = sfil_load_PNG_file("res/text.png", SF2D_PLACE_VRAM);
+	m_BookmarkedBG = sfil_load_PNG_file("res/bookmarked.png", SF2D_PLACE_VRAM);
 
 	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryEmpty.png", SF2D_PLACE_VRAM));
 	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryLowest.png", SF2D_PLACE_VRAM));
@@ -66,6 +71,7 @@ void Gui::Close()
 	sf2d_free_texture(m_Charging);
 	sf2d_free_texture(m_About);
 	sf2d_free_texture(m_TextBG);
+	sf2d_free_texture(m_BookmarkedBG);
 
 	for(auto& v : m_BatteryLevels) {
 		sf2d_free_texture(v);
@@ -128,23 +134,34 @@ void Gui::HandleEventsMenu(Input& input)
 
 void Gui::HandleEventsBook(Input& input)
 {
-	if (input.m_kDown & KEY_LEFT) { m_BookPage--; }
-	if (input.m_kDown & KEY_RIGHT) { m_BookPage++; }
-
-	if (m_BookPage < 0) { m_BookPage = 0; }
-
-	if (input.m_PosX >= 20 && input.m_PosX <= 103 && input.m_PosY >= 18 && input.m_PosY <= 185) {
-		input.curMode = 0;
-		CloseBook();
-		selected = "";
+	if (bookmarked)
+	{
+		if (input.m_PosX >= 0 && input.m_PosX <= 320 && input.m_PosY >= 0 && input.m_PosY <= 240) {
+			bookmarked = false;
+		}
 	}
+	else
+	{
+		if (input.m_kDown & KEY_LEFT) { m_BookPage--; }
+		if (input.m_kDown & KEY_RIGHT) { m_BookPage++; }
 
-	if (input.m_PosX >= 120 && input.m_PosX <= 203 && input.m_PosY >= 18 && input.m_PosY <= 185) {
-		// load bookmark
-	}
+		if (m_BookPage < 0) { m_BookPage = 0; }
 
-	if (input.m_PosX >= 219 && input.m_PosX <= 302 && input.m_PosY >= 18 && input.m_PosY <= 185) {
-		// save bookmark
+		if (input.m_PosX >= 20 && input.m_PosX <= 103 && input.m_PosY >= 18 && input.m_PosY <= 185) {
+			input.curMode = 0;
+			CloseBook();
+			selected = "";
+			m_BookPage = 0;
+		}
+
+		if (input.m_PosX >= 120 && input.m_PosX <= 203 && input.m_PosY >= 18 && input.m_PosY <= 185) {
+			LoadBookmark();
+		}
+
+		if (input.m_PosX >= 219 && input.m_PosX <= 302 && input.m_PosY >= 18 && input.m_PosY <= 185) {
+			bookmarked = true;
+			SaveBookmark();
+		}
 	}	
 }
 
@@ -248,7 +265,87 @@ void Gui::DrawBook(Gui& gui)
 
 void Gui::DrawControls()
 {
-	sf2d_draw_texture(m_Controls, 0, 0);
+	if (bookmarked)
+	{
+		sf2d_draw_texture(m_BookmarkedBG, 0, 0);
+	}
+	else
+	{
+		sf2d_draw_texture(m_Controls, 0, 0);
+	}
+}
+
+void Gui::LoadBookmark()
+{
+	// show a popup and some kind of list...
+	std::vector<int> bookmarkedPages;
+
+	std::ifstream in("books/bookmarks.xml");
+}
+
+void Gui::SaveBookmark()
+{	
+	std::ifstream in("books/bookmarks.xml");
+	std::string line, text;
+
+	if (!in.fail())
+	{
+		while(std::getline(in, line))
+		{
+			text += line + "\n";
+		}
+
+		in.close();
+
+		XMLDocument doc;
+		doc.Parse(text.c_str());
+
+		// get root bookmarks element
+		XMLElement* root = doc.FirstChildElement("bookmarks");
+
+			// create a new element with the name of the book
+		XMLElement* bookmarkElement = doc.NewElement("bookmark");
+		bookmarkElement->SetAttribute("book", selected.c_str());
+
+		// insert bookmark
+		bookmarkElement->SetAttribute("page", m_BookPage);
+		root->InsertEndChild(bookmarkElement);
+
+		doc.SaveFile("books/bookmarks.xml");
+	}
+	else
+	{
+		in.close();
+
+		XMLDocument doc;
+
+		// create a new document.
+		XMLDeclaration* dec = doc.NewDeclaration();
+		XMLNode* root = doc.NewElement("bookmarks");
+
+		doc.InsertFirstChild(dec);
+		doc.InsertEndChild(root);
+
+		// create a new element with the name of the book
+		XMLElement* bookmarkElement = doc.NewElement("bookmark");
+		bookmarkElement->SetAttribute("book", selected.c_str());
+
+		// insert bookmark
+		bookmarkElement->SetAttribute("page", m_BookPage);
+		root->InsertEndChild(bookmarkElement);
+
+		doc.SaveFile("books/bookmarks.xml");
+	}
+}
+
+sftd_font* Gui::getTextFont()
+{
+	return m_TextFont;
+}
+
+int Gui::getBookPage()
+{
+	return m_BookPage;
 }
 
 std::string Gui::clock()
