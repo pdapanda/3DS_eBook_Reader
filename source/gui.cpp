@@ -51,6 +51,7 @@ void Gui::Load()
 	m_About = sfil_load_PNG_file("res/about.png", SF2D_PLACE_VRAM);
 	m_TextBG = sfil_load_PNG_file("res/text.png", SF2D_PLACE_VRAM);
 	m_BookmarkedBG = sfil_load_PNG_file("res/bookmarked.png", SF2D_PLACE_VRAM);
+	m_Back = sfil_load_PNG_file("res/back.png", SF2D_PLACE_VRAM);
 
 	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryEmpty.png", SF2D_PLACE_VRAM));
 	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryLowest.png", SF2D_PLACE_VRAM));
@@ -89,6 +90,7 @@ void Gui::Close()
 	sf2d_free_texture(m_About);
 	sf2d_free_texture(m_TextBG);
 	sf2d_free_texture(m_BookmarkedBG);
+	sf2d_free_texture(m_Back);
 
 	for(auto& v : m_BatteryLevels) {
 		sf2d_free_texture(v);
@@ -339,7 +341,7 @@ void Gui::DrawControls()
 	else if (showBookmarks)
 	{
 		sf2d_draw_texture(m_Bottom, 0, 0);
-		sf2d_draw_texture(m_Exit, 0, 217);
+		sf2d_draw_texture(m_Back, 0, 217);
 
 		int pos = 20;
 

@@ -70,6 +70,7 @@ private:
 	sf2d_texture* m_Charging;
 	sf2d_texture* m_TextBG;
 	sf2d_texture* m_BookmarkedBG;
+	sf2d_texture* m_Back;
 	std::vector<sf2d_texture*> m_BatteryLevels;
 
 	sftd_font* m_Font;
