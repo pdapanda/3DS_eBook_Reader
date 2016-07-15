@@ -27,7 +27,8 @@ bool TextVisitor::Visit(const XMLDeclaration& declaration)
 
 bool TextVisitor::Visit(const XMLText& text)
 {
-	std::string t (text.Value());
+	std::string t = " ";
+	t = text.Value();	
 
 	// break text strings into 57 character lengths to fit on the screen.
 	for (unsigned int i = 0; i < t.length(); i += 57)

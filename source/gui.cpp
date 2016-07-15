@@ -12,6 +12,7 @@
 
 #include "gui.h"
 #include "input.h"
+#include "rendering.h"
 #include "tinyxml2/tinyxml2.h"
 
 using namespace tinyxml2;
@@ -97,7 +98,7 @@ void Gui::Close()
 	}
 }
 
-void Gui::HandleEventsMenu(Input& input)
+void Gui::HandleEventsMenu(Input& input, Renderer& ren)
 {
 	if (loading)
 	{
@@ -148,6 +149,14 @@ void Gui::HandleEventsMenu(Input& input)
 
 	if (input.m_PosX >= 0 && input.m_PosX <= 158 && input.m_PosY >= 217 && input.m_PosY <= 241) {
 		input.running = false;
+	}
+
+	if (input.m_PosX >= 0 && input.m_PosX <= 10 && input.m_PosY >= 0 && input.m_PosY <= 10) {
+		if (ren.draw3D) {
+			ren.draw3D = false;
+		} else {
+			ren.draw3D = true;
+		}
 	}
 }
 
@@ -233,7 +242,7 @@ void Gui::Update()
 	PTMU_GetBatteryChargeState(&charging);
 }
 
-void Gui::DrawFileSelect()
+void Gui::DrawFileSelect(Renderer& ren)
 {
 	sf2d_draw_texture(m_Bottom, 0, 0);
 	sf2d_draw_texture(m_Exit, 0, 217);
@@ -269,6 +278,15 @@ void Gui::DrawFileSelect()
 	else
 	{
 		sftd_draw_text(m_Font, (320 / 2) - ( sftd_get_text_width(m_Font, 12, "Loading...") / 2), 100, RGBA8(0, 0, 0, 255), 12, "Loading...");
+	}
+
+	if (ren.draw3D)
+	{
+		sftd_draw_text(m_Font, 0, 0, RGBA8(255, 0, 0, 255), 14, "3D");
+	}
+	else
+	{
+		sftd_draw_text(m_Font, 0, 0, RGBA8(0, 0, 0, 255), 14, "3D");
 	}
 }
 

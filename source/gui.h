@@ -9,6 +9,7 @@
 #include "book.h"
 
 class Input;
+class Renderer;
 
 class Gui
 {
@@ -16,7 +17,7 @@ public:
 	void Load();
 	void Close();
 
-	void HandleEventsMenu(Input& input);
+	void HandleEventsMenu(Input& input, Renderer& ren);
 	void HandleEventsBook(Input& input);
 	void Update();
 
@@ -26,7 +27,7 @@ public:
 	void DrawTextBG();
 
 	// Bottom Screen
-	void DrawFileSelect();
+	void DrawFileSelect(Renderer& ren);
 
 	void OpenBook(const std::string& bookName);
 	void CloseBook();

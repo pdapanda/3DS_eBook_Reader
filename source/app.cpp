@@ -44,7 +44,7 @@ void App::Event()
 	switch (input.curMode)
 	{
 		case MENU:
-			gui.HandleEventsMenu(input);	
+			gui.HandleEventsMenu(input, ren);	
 		break;
 
 		case TEXT:
@@ -71,7 +71,7 @@ void App::Render()
 			ren.StopDrawing();
 			ren.StartDrawingBottom();
 
-				gui.DrawFileSelect();
+				gui.DrawFileSelect(ren);
 
 			ren.StopDrawing();
 			ren.Render();
@@ -85,6 +85,18 @@ void App::Render()
 				gui.DrawStatusScreen();
 			
 			ren.StopDrawing();
+
+			if (ren.draw3D)
+			{
+				ren.StartDrawingTopRight();
+
+				gui.DrawTextBG();
+				gui.DrawBook(gui);
+				gui.DrawStatusScreen();
+
+				ren.StopDrawing();
+			}
+
 			ren.StartDrawingBottom();
 			
 				gui.DrawControls();
