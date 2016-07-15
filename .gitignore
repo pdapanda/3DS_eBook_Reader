@@ -19,3 +19,6 @@ footage/
 output/
 meta/*.bin
 meta/*.smdh
+*.jar
+config.txt
+log.txt

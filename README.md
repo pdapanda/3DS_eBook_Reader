@@ -3,11 +3,13 @@
 ![Download](qrcode.png?raw=true "Download from QRCode!")
 
 ## Instructions:
-Place books in a folder named "books" on the *root* of your SD card.
+Place books in a folder named "books" on the *root* of your SD card. Some books can take a while to load! Be patient!
 
 Use calibre (google it) to convert other formats to .epub. Make sure its as strict as possible when converting.
 
 MUST BE IN A VALID AND COMPLIANT .EPUB FORMAT. DRM-FREE EBOOK SHOPS ARE YOUR BEST BET.
+
+IF THE FORMAT IS WRONG, THE APP WILL FREEZE/CRASH.
 
 ## Building
 You must first install devkitPro, libctru, sf2d, sftd, sfil and the portlibs. To get the zip on windows you will also need gnu32 zip + unzip binaries.
