@@ -15,6 +15,7 @@ int MilliToMicro(int millis)
 void App::Init()
 {
 	// Initialize services
+	romfsInit();
 	aptInit();
 	ptmuInit();
 	hidInit();
@@ -86,17 +87,6 @@ void App::Render()
 			
 			ren.StopDrawing();
 
-			if (ren.draw3D)
-			{
-				ren.StartDrawingTopRight();
-
-				gui.DrawTextBG();
-				gui.DrawBook(gui);
-				gui.DrawStatusScreen();
-
-				ren.StopDrawing();
-			}
-
 			ren.StartDrawingBottom();
 			
 				gui.DrawControls();
@@ -117,4 +107,5 @@ void App::End()
 	hidExit();
 	ptmuExit();
 	aptExit();
+	romfsExit();
 }

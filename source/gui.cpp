@@ -40,26 +40,26 @@ std::string to_string(const T& value)
 
 void Gui::Load()
 {
-	m_TextFont = sftd_load_font_file("res/font/SourceCodePro-Regular.ttf");
-	m_Font = sftd_load_font_file("res/font/LiberationSans-Regular.ttf");
-	m_Next = sfil_load_PNG_file("res/NextFM.png", SF2D_PLACE_RAM);
-	m_Prev = sfil_load_PNG_file("res/PrevFM.png", SF2D_PLACE_RAM);
-	m_Top = sfil_load_PNG_file("res/top.png", SF2D_PLACE_RAM);
-	m_Bottom = sfil_load_PNG_file("res/bottom.png", SF2D_PLACE_RAM);
-	m_Controls = sfil_load_PNG_file("res/controls.png", SF2D_PLACE_RAM);
-	m_Exit = sfil_load_PNG_file("res/exit.png", SF2D_PLACE_RAM);
-	m_Charging = sfil_load_PNG_file("res/BatteryCharge.png", SF2D_PLACE_RAM);
-	m_About = sfil_load_PNG_file("res/about.png", SF2D_PLACE_RAM);
-	m_TextBG = sfil_load_PNG_file("res/text.png", SF2D_PLACE_RAM);
-	m_BookmarkedBG = sfil_load_PNG_file("res/bookmarked.png", SF2D_PLACE_RAM);
-	m_Back = sfil_load_PNG_file("res/back.png", SF2D_PLACE_RAM);
+	m_TextFont = sftd_load_font_file("romfs:/font/SourceCodePro-Regular.ttf");
+	m_Font = sftd_load_font_file("romfs:/font/LiberationSans-Regular.ttf");
+	m_Next = sfil_load_PNG_file("romfs:/NextFM.png", SF2D_PLACE_RAM);
+	m_Prev = sfil_load_PNG_file("romfs:/PrevFM.png", SF2D_PLACE_RAM);
+	m_Top = sfil_load_PNG_file("romfs:/top.png", SF2D_PLACE_RAM);
+	m_Bottom = sfil_load_PNG_file("romfs:/bottom.png", SF2D_PLACE_RAM);
+	m_Controls = sfil_load_PNG_file("romfs:/controls.png", SF2D_PLACE_RAM);
+	m_Exit = sfil_load_PNG_file("romfs:/exit.png", SF2D_PLACE_RAM);
+	m_Charging = sfil_load_PNG_file("romfs:/BatteryCharge.png", SF2D_PLACE_RAM);
+	m_About = sfil_load_PNG_file("romfs:/about.png", SF2D_PLACE_RAM);
+	m_TextBG = sfil_load_PNG_file("romfs:/text.png", SF2D_PLACE_RAM);
+	m_BookmarkedBG = sfil_load_PNG_file("romfs:/bookmarked.png", SF2D_PLACE_RAM);
+	m_Back = sfil_load_PNG_file("romfs:/back.png", SF2D_PLACE_RAM);
 
-	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryEmpty.png", SF2D_PLACE_RAM));
-	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryLowest.png", SF2D_PLACE_RAM));
-	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryLow.png", SF2D_PLACE_RAM));
-	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryMid.png", SF2D_PLACE_RAM));
-	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryHigh.png", SF2D_PLACE_RAM));
-	m_BatteryLevels.push_back(sfil_load_PNG_file("res/BatteryFull.png", SF2D_PLACE_RAM));
+	m_BatteryLevels.push_back(sfil_load_PNG_file("romfs:/BatteryEmpty.png", SF2D_PLACE_RAM));
+	m_BatteryLevels.push_back(sfil_load_PNG_file("romfs:/BatteryLowest.png", SF2D_PLACE_RAM));
+	m_BatteryLevels.push_back(sfil_load_PNG_file("romfs:/BatteryLow.png", SF2D_PLACE_RAM));
+	m_BatteryLevels.push_back(sfil_load_PNG_file("romfs:/BatteryMid.png", SF2D_PLACE_RAM));
+	m_BatteryLevels.push_back(sfil_load_PNG_file("romfs:/BatteryHigh.png", SF2D_PLACE_RAM));
+	m_BatteryLevels.push_back(sfil_load_PNG_file("romfs:/BatteryFull.png", SF2D_PLACE_RAM));
 
 	DIR *dir;
 	struct dirent *ent;
@@ -151,8 +151,8 @@ void Gui::HandleEventsMenu(Input& input, Renderer& ren)
 		input.running = false;
 	}
 
-	if (input.m_PosX >= 0 && input.m_PosX <= 10 && input.m_PosY >= 0 && input.m_PosY <= 10) {
-		if (ren.draw3D) {
+	if (input.m_PosX >= 1 && input.m_PosX <= 20 && input.m_PosY >= 1 && input.m_PosY <= 20) {
+		if (ren.draw3D == true) {
 			ren.draw3D = false;
 		} else {
 			ren.draw3D = true;
@@ -280,7 +280,7 @@ void Gui::DrawFileSelect(Renderer& ren)
 		sftd_draw_text(m_Font, (320 / 2) - ( sftd_get_text_width(m_Font, 12, "Loading...") / 2), 100, RGBA8(0, 0, 0, 255), 12, "Loading...");
 	}
 
-	if (ren.draw3D)
+	if (ren.draw3D == true)
 	{
 		sftd_draw_text(m_Font, 0, 0, RGBA8(255, 0, 0, 255), 14, "3D");
 	}
@@ -323,7 +323,7 @@ void Gui::DrawStatusScreen()
 
 void Gui::OpenBook(const std::string& bookName)
 {
-	std::string fullBook = "books/"+bookName;
+	std::string fullBook = "/books/"+bookName;
 
 	book.LoadBook(fullBook.c_str());
 }
@@ -398,7 +398,7 @@ void Gui::LoadBookmark()
 {
 	bookmarkedPages.clear();
 
-	std::ifstream in("books/bookmarks.xml");
+	std::ifstream in("/books/bookmarks.xml");
 	std::string line, text;
 
 	if (!in.fail())
@@ -434,7 +434,7 @@ void Gui::LoadBookmark()
 
 void Gui::SaveBookmark()
 {	
-	std::ifstream in("books/bookmarks.xml");
+	std::ifstream in("/books/bookmarks.xml");
 	std::string line, text;
 
 	if (!in.fail())
@@ -460,7 +460,7 @@ void Gui::SaveBookmark()
 		bookmarkElement->SetAttribute("page", m_BookPage);
 		root->InsertEndChild(bookmarkElement);
 
-		doc.SaveFile("books/bookmarks.xml");
+		doc.SaveFile("/books/bookmarks.xml");
 	}
 	else
 	{
@@ -483,7 +483,7 @@ void Gui::SaveBookmark()
 		bookmarkElement->SetAttribute("page", m_BookPage);
 		root->InsertEndChild(bookmarkElement);
 
-		doc.SaveFile("books/bookmarks.xml");
+		doc.SaveFile("/books/bookmarks.xml");
 	}
 }
 
@@ -514,7 +514,7 @@ std::string Gui::clock()
 void Gui::RemoveBook(const std::string& file)
 {
 	// remove book from sd card
-	std::string path = "books/" + file;
+	std::string path = "/books/" + file;
 	remove(path.c_str());
 
 	// erase book from vector
@@ -527,7 +527,7 @@ void Gui::RemoveBookmark(int element)
 	bookmarkedPages.erase(bookmarkedPages.begin() + element);
 	bookmarkedPages.shrink_to_fit();
 
-	std::ifstream in("books/bookmarks.xml");
+	std::ifstream in("/books/bookmarks.xml");
 	std::string line, text;
 
 	if (!in.fail())
@@ -556,7 +556,7 @@ void Gui::RemoveBookmark(int element)
 			}
 		}
 
-		doc.SaveFile("books/bookmarks.xml");
+		doc.SaveFile("/books/bookmarks.xml");
 	}
 	else
 	{

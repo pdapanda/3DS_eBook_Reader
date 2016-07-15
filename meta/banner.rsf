@@ -1,6 +1,6 @@
 BasicInfo:
-  Title                   : 3DS_eBook_Reader
-  ProductCode             : CTR-E-Book
+  Title                   : 3DS eBook Reader
+  ProductCode             : CTR-P-EBOK
   Logo                    : Nintendo # Nintendo / Licensed / Distributed / iQue / iQueForSystem
 
 RomFs:
@@ -8,7 +8,7 @@ RomFs:
 
 TitleInfo:
   Category                : Application
-  UniqueId                : 0xE1051
+  UniqueId                : 0xEB001
 
 Option:
   UseOnSD                 : true # true if App is to be installed to SD
