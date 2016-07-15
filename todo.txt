@@ -9,3 +9,4 @@
 - clean and document code
 - fix display of files on bottom screen (7 then 6?)
 - fix multiples of ''' characters -> maybne make string in textvisitor null terminating?
+- qrcode download.
