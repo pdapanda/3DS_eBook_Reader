@@ -11,7 +11,6 @@ build/
 *.3dsx
 *.elf
 *.smdh
-*.bat
 *.cia
 *.lnk
 unzippedepub/

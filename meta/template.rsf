@@ -1,10 +1,10 @@
 BasicInfo:
-  Title                   : 3DS eBook Reader
+  Title                   : 3DS Ebook Reader
   ProductCode             : CTR-P-EBOK
   Logo                    : Nintendo # Nintendo / Licensed / Distributed / iQue / iQueForSystem
 
 RomFs:
-  RootPath: $(APP_ROMFS)
+  RootPath: romfs
 
 TitleInfo:
   Category                : Application
@@ -67,7 +67,7 @@ AccessControlInfo:
 
   # Process Settings
   MemoryType                    : Application # Application/System/Base
-  SystemMode                    : 64MB
+  SystemMode                    : 64MB # 64MB(Default)/96MB/80MB/72MB/32MB
   IdealProcessor                : 0
   AffinityMask                  : 1
   Priority                      : 16
@@ -84,8 +84,8 @@ AccessControlInfo:
   SpecialMemoryArrange          : true
 
   # New3DS Exclusive Process Settings
-  SystemModeExt                 : $(APP_SYSTEM_MODE_EXT) # Legacy(Default)/124MB/178MB  Legacy:Use Old3DS SystemMode
-  CpuSpeed                      : 804MHz # 256MHz(Default)/804MHz
+  SystemModeExt                 : Legacy # Legacy(Default)/124MB/178MB  Legacy:Use Old3DS SystemMode
+  CpuSpeed                      : 804MHz # 268MHz(Default)/804MHz
   EnableL2Cache                 : true # false(default)/true
   CanAccessCore2                : true 
 
@@ -221,6 +221,7 @@ AccessControlInfo:
    - frd:u
    - fs:USER
    - gsp::Gpu
+   - gsp::Lcd
    - hid:USER
    - http:C
    - ir:rst
@@ -228,8 +229,10 @@ AccessControlInfo:
    - ir:USER
    - mic:u
    - ndm:u
-   - news:u
+   - news:s
+   - nwm::EXT
    - nwm::UDS
+   - ptm:sysm
    - ptm:u
    - pxi:dev
    - soc:U
@@ -239,7 +242,7 @@ AccessControlInfo:
 
 SystemControlInfo:
   SaveDataSize: 0KB # Change if the app uses savedata
-  RemasterVersion: 2
+  RemasterVersion: 1
   StackSize: 0x40000
 
   # Modules that run services listed above should be included below

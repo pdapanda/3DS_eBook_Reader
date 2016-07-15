@@ -5,7 +5,14 @@
 ## Instructions:
 Place books in a folder named "books" on the *root* of your SD card.
 
+Use calibre (google it) to convert other formats to .epub. Make sure its as strict as possible when converting.
+
 MUST BE IN A VALID AND COMPLIANT .EPUB FORMAT. DRM-FREE EBOOK SHOPS ARE YOUR BEST BET.
+
+## Building
+You must first install devkitPro, libctru, sf2d, sftd, sfil and the portlibs. To get the zip on windows you will also need gnu32 zip + unzip binaries.
+
+Then run "build-cia.bat" or "build-cia.sh" depending on your platform.
 
 ## Credits:
 - AlbertoSonic for initial codebase and graphics.

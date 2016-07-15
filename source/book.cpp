@@ -14,11 +14,6 @@
 
 using namespace tinyxml2;
 
-double degrees_to_radians(double degrees)
-{
-	return degrees * M_PI / 180.0;
-}
-
 Book::~Book()
 {
 	manifest.clear();
