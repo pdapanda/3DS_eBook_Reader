@@ -17,3 +17,5 @@ unzippedepub/
 referencefiles/
 footage/
 output/
+meta/*.bin
+meta/*.smdh
