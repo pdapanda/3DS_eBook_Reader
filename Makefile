@@ -32,7 +32,7 @@ EXTRA_OUTPUT_FILES :=
 LIBRARY_DIRS := $(DEVKITPRO)/libctru $(PORTLIBS)
 LIBRARIES := sftd sfil freetype jpeg turbojpeg png png16 sf2d ctru m z
 
-BUILD_FLAGS := -DSTATUS_STRING="\"ftpd v$(VERSION)\""
+BUILD_FLAGS :=
 RUN_FLAGS :=
 
 #VERSION_PARTS := $(subst ., ,$(shell git describe --tags --abbrev=0))
