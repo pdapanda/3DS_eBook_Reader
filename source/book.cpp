@@ -88,8 +88,8 @@ void Book::ParsePages(BLUnZip& zipfile)
     	filter[c] = 0;
 	}
 
-	// spine.size();
-	for (unsigned int i = 0; i != 7; i++)
+	// spine.size(); or 7
+	for (unsigned int i = 0; i != spine.size(); i++)
 	{
 		TextVisitor tv;
 
