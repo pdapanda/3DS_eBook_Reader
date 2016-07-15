@@ -64,7 +64,7 @@ void Gui::Load()
 	DIR *dir;
 	struct dirent *ent;
 	
-	dir = opendir("books");
+	dir = opendir("/books");
 
 	while ((ent = readdir (dir)) != nullptr	)
 	{
